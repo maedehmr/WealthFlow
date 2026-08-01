@@ -1,9 +1,8 @@
 import "../styles/globals.css";
 import React from "react";
 import type { Metadata } from "next";
-import { SidebarLayout } from "@/layouts";
 import { inter, vazir } from "@/styles/fonts";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 export const metadata: Metadata = {
   title: {
@@ -23,10 +22,12 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={cn(vazir.variable, inter.variable, "font-sans")}>
-      <body>
-        <SidebarLayout>{children}</SidebarLayout>
-      </body>
+    <html
+      lang="fa"
+      dir="rtl"
+      className={cn(vazir.variable, inter.variable, "font-sans")}
+    >
+      <body>{children}</body>
     </html>
   );
 }
