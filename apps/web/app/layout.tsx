@@ -3,6 +3,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { inter, vazir } from "@/styles/fonts";
 import { cn } from "@/shared/lib/utils";
+import { Providers } from "@/providers/Providers";
 
 export const metadata: Metadata = {
   title: {
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
       dir="rtl"
       className={cn(vazir.variable, inter.variable, "font-sans")}
     >
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

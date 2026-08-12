@@ -1,9 +1,21 @@
+"use client";
+
 import { mainNavItems, secondaryNavItems } from "@/shared/constants/navItems";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { cn } from "@/shared/lib/utils";
+import { Routes } from "@/shared/constants/routes";
+import { authService } from "@/features/auth/model/authService";
 
-export default function AsideNav() {
+function AsideNav() {
+  const router = useRouter();
+
+  const handleExit = async () => {
+    await authService.logout();
+    router.push(Routes.Login);
+  };
+
   return (
     <>
       <nav className="flex flex-1 flex-col gap-6 p-4">
@@ -30,17 +42,20 @@ export default function AsideNav() {
       <div className="border-t border-sidebar-border p-4">
         <div className="grid gap-1">
           {secondaryNavItems.map((item) => (
-            <Link
+            <button
               key={item.title}
-              href={item.href}
-              className="flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              type="button"
+              onClick={() => void handleExit()}
+              className="flex h-10 w-full items-center gap-3 rounded-lg px-3 text-right text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             >
               <item.icon className="size-4" />
               {item.title}
-            </Link>
+            </button>
           ))}
         </div>
       </div>
     </>
   );
 }
+
+export { AsideNav };

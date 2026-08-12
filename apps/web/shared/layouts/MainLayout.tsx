@@ -1,6 +1,5 @@
 import React from "react";
-import { AsideNav, BottomNav, Header } from "@/shared/layouts/index";
-import Logo from "@/shared/components/Logo";
+import { AsideNav, BottomNav, Header, Logo } from "@/shared/components";
 
 interface SidebarLayoutProps {
   children: React.ReactNode;

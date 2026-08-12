@@ -1,11 +1,3 @@
-import { LoginRequest } from '@repo/models';
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { LoginRequestModel } from '@repo/models';
 
-export class LoginRequestDto implements LoginRequest {
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  @MinLength(8)
-  password: string;
-}
+export class LoginRequestDto extends LoginRequestModel {}

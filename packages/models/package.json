@@ -1,0 +1,22 @@
+{
+  "name": "@repo/models",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "class-validator": "^0.15.1",
+    "class-transformer": "^0.5.1",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "5.9.2"
+  }
+}

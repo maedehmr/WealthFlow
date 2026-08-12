@@ -1,8 +1,8 @@
 import React from "react";
-import { Button } from "@/shared/components/button";
+import { Button } from "@/shared/components/Button";
 import { Bell, Search, WalletCards } from "lucide-react";
 
-export default function AuthLayout() {
+function Header() {
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:px-6">
       <div className="flex items-center gap-3">
@@ -27,3 +27,5 @@ export default function AuthLayout() {
     </header>
   );
 }
+
+export { Header };

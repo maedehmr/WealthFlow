@@ -1,4 +1,4 @@
-import { User as UserModel } from '@repo/models';
+import { UserModel } from '@repo/models';
 import { User } from '../entities/user.entity';
 
 export class UserMapper {

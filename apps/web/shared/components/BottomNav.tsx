@@ -3,7 +3,7 @@ import { cn } from "@/shared/lib/utils";
 import React from "react";
 import { mainNavItems } from "@/shared/constants/navItems";
 
-export default function BottomNav() {
+function BottomNav() {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 px-2 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:hidden">
       <div className="grid grid-cols-4 gap-1">
@@ -25,3 +25,5 @@ export default function BottomNav() {
     </nav>
   );
 }
+
+export { BottomNav };

@@ -6,15 +6,14 @@ import {
   TrendingUp,
   WalletCards,
 } from "lucide-react";
-
-import { Badge } from "@/shared/components/badge";
+import { Badge } from "@/shared/components/Badge";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/shared/components/card";
+} from "@/shared/components/Card";
 
 const summaryCards = [
   {

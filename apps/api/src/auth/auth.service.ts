@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { LoginResponse } from '@repo/models';
+import { LoginResponseModel } from '@repo/models';
 import * as bcrypt from 'bcrypt';
 import { UserMapper } from '../users/mappers/user.mapper';
 import { UsersRepository } from '../users/users.repository';
@@ -13,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(dto: LoginRequestDto): Promise<LoginResponse> {
+  async login(dto: LoginRequestDto): Promise<LoginResponseModel> {
     const user = await this.usersRepository.findByEmail(dto.email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');

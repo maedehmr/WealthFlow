@@ -1,6 +1,6 @@
 import { WalletCards } from "lucide-react";
 
-export default function Logo() {
+function Logo() {
   return (
     <div className="flex gap-2">
       <div className="flex size-9 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground shadow-xs">
@@ -13,3 +13,5 @@ export default function Logo() {
     </div>
   );
 }
+
+export { Logo };
