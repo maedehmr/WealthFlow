@@ -4,7 +4,7 @@ import { AUTH_COOKIE_NAME, verifyAuthToken } from "@/features/auth/model/authSes
 
 const PUBLIC_ROUTES = [Routes.Login as string];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const session = await verifyAuthToken(
     request.cookies.get(AUTH_COOKIE_NAME)?.value,
