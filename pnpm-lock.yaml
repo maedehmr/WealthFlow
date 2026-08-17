@@ -189,12 +189,18 @@ importers:
       react:
         specifier: 19.2.4
         version: 19.2.4
+      react-date-object:
+        specifier: ^2.1.9
+        version: 2.1.9
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
       react-hook-form:
         specifier: ^7.85.0
         version: 7.85.0(react@19.2.4)
+      react-multi-date-picker:
+        specifier: ^4.5.2
+        version: 4.5.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -4340,10 +4346,19 @@ packages:
     resolution: {integrity: sha512-K5zQjDllxWkf7Z5xJdV0/B0WTNqx6vxG70zJE4N0kBs4LovmEYWJzQGxC9bS9RAKu3bgM40lrd5zoLJ12MQ5BA==}
     engines: {node: '>= 0.10'}
 
+  react-date-object@2.1.9:
+    resolution: {integrity: sha512-BHxD/quWOTo9fLKV/cfL/M31ePoj4a1JaJ/CnOf8Ndg3mrkh4x9wEMMkCfTrzduxDOgU8ZgR8uarhqI5G71sTg==}
+
   react-dom@19.2.4:
     resolution: {integrity: sha512-AXJdLo8kgMbimY95O2aKQqsz2iWi9jMgKJhRBAxECE4IFxfcazB2LmzloIoibJI3C12IlY20+KFaLv+71bUJeQ==}
     peerDependencies:
       react: ^19.2.4
+
+  react-element-popper@2.1.7:
+    resolution: {integrity: sha512-tuM2OxKlW32h+6uFSK6EENHPeZ2OGgOipHfOAl+VLWEv9/j3QkSGbD+ADX3A9uJlmq24i37n28RjJmAbGTfpEg==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
 
   react-hook-form@7.85.0:
     resolution: {integrity: sha512-U2MTriFXnclmV4rOE20p2DcRFv5WEg3FIcBFOKcOLFHDVvGIMPvLTkTWefUsonmlaVy23khVDxDWym6uJVGOzw==}
@@ -4359,6 +4374,12 @@ packages:
 
   react-is@19.2.8:
     resolution: {integrity: sha512-s5un28nYxKJw5gvUHyW5PCC28CvBqLu9r3cWgzHT4Vo/5fqqkFcdRYsGcKf50WMPpjjFZS5d76fn3YCo2njKwQ==}
+
+  react-multi-date-picker@4.5.2:
+    resolution: {integrity: sha512-FgWjZB3Z6IA6XpcWiLPk85PwcRUhOiYhKK42o5k672gD/n2I6rzPfQ8bUrldOIiF/Z7FfOCdH7a6FeubzqteLg==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
 
   react@19.2.4:
     resolution: {integrity: sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ==}
@@ -9737,10 +9758,17 @@ snapshots:
       iconv-lite: 0.7.3
       unpipe: 1.0.0
 
+  react-date-object@2.1.9: {}
+
   react-dom@19.2.4(react@19.2.4):
     dependencies:
       react: 19.2.4
       scheduler: 0.27.0
+
+  react-element-popper@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
 
   react-hook-form@7.85.0(react@19.2.4):
     dependencies:
@@ -9751,6 +9779,13 @@ snapshots:
   react-is@18.3.1: {}
 
   react-is@19.2.8: {}
+
+  react-multi-date-picker@4.5.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      react: 19.2.4
+      react-date-object: 2.1.9
+      react-dom: 19.2.4(react@19.2.4)
+      react-element-popper: 2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
   react@19.2.4: {}
 

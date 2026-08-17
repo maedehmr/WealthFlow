@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { Income } from '../income/entities/income.entity';
 import { User } from '../users/entities/user.entity';
 
 export const getDatabaseConfig = (
@@ -11,6 +12,6 @@ export const getDatabaseConfig = (
   username: configService.get<string>('DB_USER'),
   password: configService.get<string>('DB_PASSWORD'),
   database: configService.get<string>('DB_NAME'),
-  entities: [User],
+  entities: [User, Income],
   synchronize: true,
 });

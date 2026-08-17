@@ -1,0 +1,13 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Income } from './entities/income.entity';
+import { IncomeController } from './income.controller';
+import { IncomeRepository } from './income.repository';
+import { IncomeService } from './income.service';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Income])],
+  controllers: [IncomeController],
+  providers: [IncomeService, IncomeRepository],
+})
+export class IncomeModule {}
