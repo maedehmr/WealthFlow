@@ -4,37 +4,38 @@ import type {
   UpdateIncomeRequestModel,
 } from "@repo/models";
 import { httpClient } from "@/shared/lib/httpClient";
+import { IncomeItemModel } from "@/features/income/model/incomeModel";
 
 export interface IncomeApi {
-  list(): Promise<IncomeModel[]>;
-  create(data: CreateIncomeRequestModel): Promise<IncomeModel>;
-  update(id: string, data: UpdateIncomeRequestModel): Promise<IncomeModel>;
+  list(): Promise<IncomeItemModel[]>;
+  create(data: CreateIncomeRequestModel): Promise<IncomeItemModel>;
+  update(id: string, data: UpdateIncomeRequestModel): Promise<IncomeItemModel>;
   remove(id: string): Promise<void>;
 }
 
 class HttpIncomeApi implements IncomeApi {
-  async list(): Promise<IncomeModel[]> {
+  async list(): Promise<IncomeItemModel[]> {
     const { data } = await httpClient.get<IncomeModel[]>("/income");
-    return data;
+    return data.map(IncomeItemModel.fromIncomeModel);
   }
 
-  async create(data: CreateIncomeRequestModel): Promise<IncomeModel> {
+  async create(data: CreateIncomeRequestModel): Promise<IncomeItemModel> {
     const { data: income } = await httpClient.post<IncomeModel>(
       "/income",
-      data
+      data,
     );
-    return income;
+    return IncomeItemModel.fromIncomeModel(income);
   }
 
   async update(
     id: string,
-    data: UpdateIncomeRequestModel
-  ): Promise<IncomeModel> {
+    data: UpdateIncomeRequestModel,
+  ): Promise<IncomeItemModel> {
     const { data: income } = await httpClient.patch<IncomeModel>(
       `/income/${id}`,
-      data
+      data,
     );
-    return income;
+    return IncomeItemModel.fromIncomeModel(income);
   }
 
   async remove(id: string): Promise<void> {

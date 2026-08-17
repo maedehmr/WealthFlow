@@ -20,7 +20,7 @@ export function getNumberFormatter(
 const tomanFormatter = getNumberFormatter("fa-IR");
 
 export function formatToman(amount: number): string {
-  return `${tomanFormatter.format(amount)} تومان`;
+  return tomanFormatter.format(amount);
 }
 
 export function formatUsd(amount: number): string {

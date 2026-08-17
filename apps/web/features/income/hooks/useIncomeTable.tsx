@@ -2,53 +2,55 @@
 
 import { useMemo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
-import type { IncomeModel } from "@repo/models";
 import { Button } from "@/shared/components/Button";
-import { formatJalaliDate, formatToman, formatUsd } from "@/shared/lib/format";
-import { IncomeCategoryLabel } from "@/features/income/model/incomeConstant";
 import { useExchangeRate } from "@/features/income/hooks/useExchangeRate";
 import { useIncomes } from "@/features/income/hooks/useIncomes";
 import { useIncomeStore } from "@/features/income/model/incomeStore";
 import { TableColumnDef, useTable } from "@/shared/hooks/useTable";
+import { IncomeItemModel } from "@/features/income/model/incomeModel";
 
 export function useIncomeTable() {
-  const { data: incomes, isLoading: isIncomesLoading, errorMessage } = useIncomes();
-  const { data: tomanPerUsdRate, isLoading: isExchangeRateLoading } = useExchangeRate();
+  const {
+    data: incomes,
+    isLoading: isIncomesLoading,
+    errorMessage,
+  } = useIncomes();
+  const { data: tomanPerUsdRate, isLoading: isExchangeRateLoading } =
+    useExchangeRate();
   const isLoading = isIncomesLoading || isExchangeRateLoading;
   const openEditDialog = useIncomeStore((state) => state.openEditDialog);
   const openDeleteDialog = useIncomeStore((state) => state.openDeleteDialog);
 
-  const columns: TableColumnDef<IncomeModel>[] = useMemo(
+  const columns: TableColumnDef<IncomeItemModel>[] = useMemo(
     () => [
       { key: "name", header: "نام" },
       {
         key: "price",
         header: "قیمت (تومان)",
-        cell: (row: IncomeModel) => formatToman(row.price),
+        cell: (row: IncomeItemModel) => row.formatPrice,
       },
       {
         key: "priceUsd",
         header: "قیمت (دلار)",
-        cell: (row: IncomeModel) =>
-          tomanPerUsdRate ? formatUsd(row.price / tomanPerUsdRate) : "—",
+        cell: (row: IncomeItemModel) => row.formatPriceUsd(tomanPerUsdRate),
       },
       { key: "source", header: "منبع" },
       {
         key: "date",
         header: "تاریخ",
-        cell: (row: IncomeModel) => formatJalaliDate(row.date),
+        cell: (row: IncomeItemModel) => row.formatDate,
       },
       {
         key: "category",
         header: "دسته‌بندی",
-        cell: (row: IncomeModel) => IncomeCategoryLabel[row.category],
+        cell: (row: IncomeItemModel) => row.categoryLabel,
       },
     ],
     [tomanPerUsdRate],
   );
 
   const renderActions = useMemo(() => {
-    function IncomeRowActions(row: IncomeModel) {
+    function IncomeRowActions(row: IncomeItemModel) {
       return (
         <div className="flex items-center gap-2">
           <Button
@@ -74,7 +76,7 @@ export function useIncomeTable() {
   const table = useTable({
     rows: incomes ?? [],
     columns,
-    rowKey: (row: IncomeModel) => row.id,
+    rowKey: (row: IncomeItemModel) => row.id,
     renderActions,
   });
 

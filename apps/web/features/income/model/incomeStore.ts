@@ -1,17 +1,17 @@
 import { create } from "zustand";
-import type { IncomeModel } from "@repo/models";
+import { IncomeItemModel } from "@/features/income/model/incomeModel";
 
 export type IncomeFormMode = "create" | "edit";
 
 interface IncomeState {
   isFormDialogOpen: boolean;
   formMode: IncomeFormMode;
-  selectedIncome: IncomeModel | null;
+  selectedIncome: IncomeItemModel | null;
   isDeleteDialogOpen: boolean;
   openCreateDialog: () => void;
-  openEditDialog: (income: IncomeModel) => void;
+  openEditDialog: (income: IncomeItemModel) => void;
   closeFormDialog: () => void;
-  openDeleteDialog: (income: IncomeModel) => void;
+  openDeleteDialog: (income: IncomeItemModel) => void;
   closeDeleteDialog: () => void;
 }
 

@@ -1,20 +1,20 @@
 import type {
   CreateIncomeRequestModel,
-  IncomeModel,
   UpdateIncomeRequestModel,
 } from "@repo/models";
 import { incomeApi } from "@/features/income/api/incomeApi";
+import { IncomeItemModel } from "@/features/income/model/incomeModel";
 
 export class IncomeService {
-  list(): Promise<IncomeModel[]> {
+  list(): Promise<IncomeItemModel[]> {
     return incomeApi.list();
   }
 
-  create(data: CreateIncomeRequestModel): Promise<IncomeModel> {
+  create(data: CreateIncomeRequestModel): Promise<IncomeItemModel> {
     return incomeApi.create(data);
   }
 
-  update(id: string, data: UpdateIncomeRequestModel): Promise<IncomeModel> {
+  update(id: string, data: UpdateIncomeRequestModel): Promise<IncomeItemModel> {
     return incomeApi.update(id, data);
   }
 

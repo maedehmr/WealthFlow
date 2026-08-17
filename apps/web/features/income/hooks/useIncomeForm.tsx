@@ -1,17 +1,18 @@
 import { classValidatorResolver } from "@hookform/resolvers/class-validator";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { CreateIncomeRequestModel, IncomeModel } from "@repo/models";
+import { CreateIncomeRequestModel } from "@repo/models";
 import { useCreateIncome } from "@/features/income/hooks/useCreateIncome";
 import { useUpdateIncome } from "@/features/income/hooks/useUpdateIncome";
 import { useIncomeStore } from "@/features/income/model/incomeStore";
 import type { IncomeFormMode } from "@/features/income/model/incomeStore";
+import { IncomeItemModel } from "@/features/income/model/incomeModel";
 
 const resolver = classValidatorResolver(CreateIncomeRequestModel);
 
 interface UseIncomeFormOptions {
   mode: IncomeFormMode;
-  initialValues: IncomeModel | null;
+  initialValues: IncomeItemModel | null;
 }
 
 export function useIncomeForm({ mode, initialValues }: UseIncomeFormOptions) {
@@ -62,7 +63,7 @@ export function useIncomeForm({ mode, initialValues }: UseIncomeFormOptions) {
     if (mode === "edit" && initialValues) {
       updateIncome(
         { id: initialValues.id, data },
-        { onSuccess: () => closeFormDialog() }
+        { onSuccess: () => closeFormDialog() },
       );
     } else {
       createIncome(data, {
