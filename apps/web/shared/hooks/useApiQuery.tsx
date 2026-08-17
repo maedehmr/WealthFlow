@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
-import { getErrorMessage, type ErrorMessageMap } from "@/shared/lib/utils";
+import { ErrorMessageMap, getErrorMessage } from "@/shared/lib/errorMessage";
 
 export function useApiQuery<TData, TError = unknown>(
   options: UseQueryOptions<TData, TError>,

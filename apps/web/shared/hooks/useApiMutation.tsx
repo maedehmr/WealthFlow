@@ -1,5 +1,5 @@
 import { useMutation, type UseMutationOptions } from "@tanstack/react-query";
-import { getErrorMessage, type ErrorMessageMap } from "@/shared/lib/utils";
+import { ErrorMessageMap, getErrorMessage } from "@/shared/lib/errorMessage";
 
 export function useApiMutation<TData, TVariables, TError = unknown>(
   options: UseMutationOptions<TData, TError, TVariables>,
