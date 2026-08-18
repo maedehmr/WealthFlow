@@ -128,6 +128,7 @@ export function IncomeFormDialog() {
               render={({ field }) => (
                 <Select
                   name={field.name}
+                  items={IncomeCategoryLabel}
                   value={field.value ?? null}
                   onValueChange={(value) => field.onChange(value)}
                   disabled={field.disabled}
