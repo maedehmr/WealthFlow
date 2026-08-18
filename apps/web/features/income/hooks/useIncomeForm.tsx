@@ -34,8 +34,13 @@ export function useIncomeForm({ mode, initialValues }: UseIncomeFormOptions) {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
-  } = useForm<CreateIncomeRequestModel>({ resolver });
+    trigger,
+    formState: { errors, isValid },
+  } = useForm<CreateIncomeRequestModel>({
+    resolver,
+    mode: "onBlur",
+    reValidateMode: "onBlur",
+  });
 
   useEffect(() => {
     if (!isFormDialogOpen) return;
@@ -48,6 +53,7 @@ export function useIncomeForm({ mode, initialValues }: UseIncomeFormOptions) {
         date: initialValues.date,
         category: initialValues.category,
       });
+      trigger();
     } else {
       reset({
         name: "",
@@ -57,7 +63,7 @@ export function useIncomeForm({ mode, initialValues }: UseIncomeFormOptions) {
         category: undefined,
       });
     }
-  }, [isFormDialogOpen, mode, initialValues, reset]);
+  }, [isFormDialogOpen, mode, initialValues, reset, trigger]);
 
   const onSubmit = handleSubmit((data) => {
     if (mode === "edit" && initialValues) {
@@ -85,6 +91,7 @@ export function useIncomeForm({ mode, initialValues }: UseIncomeFormOptions) {
     register,
     control,
     errors,
+    isValid,
     onSubmit,
     isPending: mode === "edit" ? isUpdating : isCreating,
     errorMessage: mode === "edit" ? updateErrorMessage : createErrorMessage,

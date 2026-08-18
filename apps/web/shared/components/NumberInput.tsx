@@ -17,6 +17,7 @@ interface NumberInputProps {
   name?: string;
   value?: number;
   onChange?: (value: number | undefined) => void;
+  onBlur?: () => void;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
@@ -50,6 +51,7 @@ function NumberInput({
   name,
   value,
   onChange,
+  onBlur,
   placeholder,
   className,
   disabled,
@@ -110,6 +112,7 @@ function NumberInput({
       dir="ltr"
       value={displayValue}
       onChange={handleChange}
+      onBlur={onBlur}
       placeholder={placeholder}
       disabled={disabled}
       className={cn("text-end", className)}

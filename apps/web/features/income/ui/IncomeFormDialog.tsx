@@ -33,8 +33,15 @@ export function IncomeFormDialog() {
   const selectedIncome = useIncomeStore((state) => state.selectedIncome);
   const closeFormDialog = useIncomeStore((state) => state.closeFormDialog);
 
-  const { register, control, errors, onSubmit, isPending, errorMessage } =
-    useIncomeForm({ mode: formMode, initialValues: selectedIncome });
+  const {
+    register,
+    control,
+    errors,
+    isValid,
+    onSubmit,
+    isPending,
+    errorMessage,
+  } = useIncomeForm({ mode: formMode, initialValues: selectedIncome });
 
   return (
     <Dialog
@@ -82,6 +89,7 @@ export function IncomeFormDialog() {
                   name={field.name}
                   value={field.value}
                   onChange={field.onChange}
+                  onBlur={field.onBlur}
                   disabled={field.disabled}
                 />
               )}
@@ -112,6 +120,7 @@ export function IncomeFormDialog() {
                   name={field.name}
                   value={field.value}
                   onChange={field.onChange}
+                  onClose={field.onBlur}
                   disabled={field.disabled}
                 />
               )}
@@ -131,6 +140,9 @@ export function IncomeFormDialog() {
                   items={IncomeCategoryLabel}
                   value={field.value ?? null}
                   onValueChange={(value) => field.onChange(value)}
+                  onOpenChange={(open) => {
+                    if (!open) field.onBlur();
+                  }}
                   disabled={field.disabled}
                 >
                   <SelectTrigger id="income-category">
@@ -166,7 +178,7 @@ export function IncomeFormDialog() {
             >
               انصراف
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending || !isValid}>
               {isPending ? "در حال ذخیره..." : "ذخیره"}
             </Button>
           </DialogFooter>

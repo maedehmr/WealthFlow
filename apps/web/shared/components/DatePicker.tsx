@@ -11,6 +11,7 @@ interface DatePickerProps {
   name?: string;
   value?: number;
   onChange?: (timestamp: number | undefined) => void;
+  onClose?: () => void;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
@@ -21,6 +22,7 @@ function DatePicker({
   name,
   value,
   onChange,
+  onClose,
   placeholder,
   className,
   disabled,
@@ -39,6 +41,7 @@ function DatePicker({
         onChange={(dateObject: DateObject | null) =>
           onChange?.(dateObject ? dateObject.toDate().getTime() : undefined)
         }
+        onClose={onClose}
         inputClass={cn(
           "border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex h-9 w-full rounded-md border px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20",
           className,
