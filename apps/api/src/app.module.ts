@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { getDatabaseConfig } from './config/database.config';
+import { ExpenseModule } from './expense/expense.module';
 import { IncomeModule } from './income/income.module';
 import { UsersModule } from './users/users.module';
 
@@ -19,6 +20,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     AuthModule,
     IncomeModule,
+    ExpenseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -25,18 +25,19 @@ import {
   SelectValue,
 } from "@/shared/components/Select";
 import { Textarea } from "@/shared/components/Textarea";
-import { useIncomeForm } from "@/features/income/hooks/useIncomeForm";
+import { useExpenseForm } from "@/features/expenses/hooks/useExpenseForm";
 import {
-  IncomeCategoryLabel,
+  ExpenseCategoryLabel,
+  PaymentMethodLabel,
   RecurrenceRuleLabel,
-} from "@/features/income/model/incomeConstant";
-import { useIncomeStore } from "@/features/income/model/incomeStore";
+} from "@/features/expenses/model/expenseConstant";
+import { useExpenseStore } from "@/features/expenses/model/expenseStore";
 
-export function IncomeFormDialog() {
-  const isFormDialogOpen = useIncomeStore((state) => state.isFormDialogOpen);
-  const formMode = useIncomeStore((state) => state.formMode);
-  const selectedIncome = useIncomeStore((state) => state.selectedIncome);
-  const closeFormDialog = useIncomeStore((state) => state.closeFormDialog);
+export function ExpenseFormDialog() {
+  const isFormDialogOpen = useExpenseStore((state) => state.isFormDialogOpen);
+  const formMode = useExpenseStore((state) => state.formMode);
+  const selectedExpense = useExpenseStore((state) => state.selectedExpense);
+  const closeFormDialog = useExpenseStore((state) => state.closeFormDialog);
 
   const {
     register,
@@ -48,7 +49,7 @@ export function IncomeFormDialog() {
     onSubmit,
     isPending,
     errorMessage,
-  } = useIncomeForm({ mode: formMode, initialValues: selectedIncome });
+  } = useExpenseForm({ mode: formMode, initialValues: selectedExpense });
 
   return (
     <Dialog
@@ -73,26 +74,26 @@ export function IncomeFormDialog() {
         />
         <DialogHeader>
           <DialogTitle>
-            {formMode === "edit" ? "ویرایش درآمد" : "درآمد جدید"}
+            {formMode === "edit" ? "ویرایش هزینه" : "هزینه جدید"}
           </DialogTitle>
-          <DialogDescription>اطلاعات درآمد را وارد کنید.</DialogDescription>
+          <DialogDescription>اطلاعات هزینه را وارد کنید.</DialogDescription>
         </DialogHeader>
         <form className="grid gap-4" onSubmit={onSubmit} noValidate>
           <div className="grid gap-2">
-            <Label htmlFor="income-name">نام</Label>
-            <Input id="income-name" {...register("name")} />
+            <Label htmlFor="expense-name">نام</Label>
+            <Input id="expense-name" {...register("name")} />
             {errors.name && (
               <p className="text-destructive text-sm">{errors.name.message}</p>
             )}
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="income-price">قیمت (تومان)</Label>
+            <Label htmlFor="expense-price">قیمت (تومان)</Label>
             <Controller
               control={control}
               name="price"
               render={({ field }) => (
                 <NumberInput
-                  id="income-price"
+                  id="expense-price"
                   name={field.name}
                   value={field.value}
                   onChange={field.onChange}
@@ -108,43 +109,14 @@ export function IncomeFormDialog() {
             )}
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="income-source">منبع</Label>
-            <Input id="income-source" {...register("source")} />
-            {errors.source && (
-              <p className="text-destructive text-sm">
-                {errors.source.message}
-              </p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="income-date">تاریخ</Label>
-            <Controller
-              control={control}
-              name="date"
-              render={({ field }) => (
-                <DatePicker
-                  id="income-date"
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onClose={field.onBlur}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-            {errors.date && (
-              <p className="text-destructive text-sm">{errors.date.message}</p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="income-category">دسته‌بندی</Label>
+            <Label htmlFor="expense-category">دسته‌بندی</Label>
             <Controller
               control={control}
               name="category"
               render={({ field }) => (
                 <Select
                   name={field.name}
-                  items={IncomeCategoryLabel}
+                  items={ExpenseCategoryLabel}
                   value={field.value ?? null}
                   onValueChange={(value) => field.onChange(value)}
                   onOpenChange={(open) => {
@@ -152,11 +124,11 @@ export function IncomeFormDialog() {
                   }}
                   disabled={field.disabled}
                 >
-                  <SelectTrigger id="income-category">
+                  <SelectTrigger id="expense-category">
                     <SelectValue placeholder="انتخاب کنید" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(IncomeCategoryLabel).map(
+                    {Object.entries(ExpenseCategoryLabel).map(
                       ([value, label]) => (
                         <SelectItem key={value} value={value}>
                           {label}
@@ -173,13 +145,70 @@ export function IncomeFormDialog() {
               </p>
             )}
           </div>
+          <div className="grid gap-2">
+            <Label htmlFor="expense-date">تاریخ</Label>
+            <Controller
+              control={control}
+              name="date"
+              render={({ field }) => (
+                <DatePicker
+                  id="expense-date"
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                  onClose={field.onBlur}
+                  disabled={field.disabled}
+                />
+              )}
+            />
+            {errors.date && (
+              <p className="text-destructive text-sm">{errors.date.message}</p>
+            )}
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="expense-payment-method">روش پرداخت</Label>
+            <Controller
+              control={control}
+              name="paymentMethod"
+              render={({ field }) => (
+                <Select
+                  name={field.name}
+                  items={PaymentMethodLabel}
+                  value={field.value ?? null}
+                  onValueChange={(value) => field.onChange(value)}
+                  onOpenChange={(open) => {
+                    if (!open) field.onBlur();
+                  }}
+                  disabled={field.disabled}
+                >
+                  <SelectTrigger id="expense-payment-method">
+                    <SelectValue placeholder="انتخاب کنید" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(PaymentMethodLabel).map(
+                      ([value, label]) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      )
+                    )}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.paymentMethod && (
+              <p className="text-destructive text-sm">
+                {errors.paymentMethod.message}
+              </p>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <Controller
               control={control}
               name="isRecurring"
               render={({ field }) => (
                 <Checkbox
-                  id="income-is-recurring"
+                  id="expense-is-recurring"
                   checked={field.value ?? false}
                   onCheckedChange={(checked) =>
                     handleRecurringChange(checked)
@@ -189,7 +218,7 @@ export function IncomeFormDialog() {
                 />
               )}
             />
-            <Label htmlFor="income-is-recurring">درآمد تکرارشونده است</Label>
+            <Label htmlFor="expense-is-recurring">هزینه تکرارشونده است</Label>
             {errors.isRecurring && (
               <p className="text-destructive text-sm">
                 {errors.isRecurring.message}
@@ -198,7 +227,7 @@ export function IncomeFormDialog() {
           </div>
           {isRecurring && (
             <div className="grid gap-2">
-              <Label htmlFor="income-recurrence-rule">دوره تکرار</Label>
+              <Label htmlFor="expense-recurrence-rule">دوره تکرار</Label>
               <Controller
                 control={control}
                 name="recurrenceRule"
@@ -213,7 +242,7 @@ export function IncomeFormDialog() {
                     }}
                     disabled={field.disabled}
                   >
-                    <SelectTrigger id="income-recurrence-rule">
+                    <SelectTrigger id="expense-recurrence-rule">
                       <SelectValue placeholder="انتخاب کنید" />
                     </SelectTrigger>
                     <SelectContent>
@@ -236,8 +265,8 @@ export function IncomeFormDialog() {
             </div>
           )}
           <div className="grid gap-2">
-            <Label htmlFor="income-notes">یادداشت</Label>
-            <Textarea id="income-notes" {...register("notes")} />
+            <Label htmlFor="expense-notes">یادداشت</Label>
+            <Textarea id="expense-notes" {...register("notes")} />
             {errors.notes && (
               <p className="text-destructive text-sm">
                 {errors.notes.message}

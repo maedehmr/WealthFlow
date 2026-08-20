@@ -1,4 +1,4 @@
-import { IncomeCategory, RecurrenceRule } from '@repo/models';
+import { ExpenseCategory, PaymentMethod, RecurrenceRule } from '@repo/models';
 import {
   Column,
   CreateDateColumn,
@@ -7,8 +7,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('incomes')
-export class Income {
+@Entity('expenses')
+export class Expense {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -24,8 +24,12 @@ export class Income {
   })
   price: number;
 
-  @Column({ type: 'varchar', length: 255 })
-  source: string;
+  @Column({
+    type: 'enum',
+    enum: ExpenseCategory,
+    default: ExpenseCategory.Other,
+  })
+  category: ExpenseCategory;
 
   @Column({ type: 'timestamptz' })
   date: Date;
@@ -38,10 +42,10 @@ export class Income {
 
   @Column({
     type: 'enum',
-    enum: IncomeCategory,
-    default: IncomeCategory.Other,
+    enum: PaymentMethod,
+    default: PaymentMethod.Other,
   })
-  category: IncomeCategory;
+  paymentMethod: PaymentMethod;
 
   @Column({ type: 'text', nullable: true })
   notes: string | null;

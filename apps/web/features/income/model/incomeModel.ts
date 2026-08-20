@@ -1,6 +1,9 @@
 import { IncomeModel } from "@repo/models";
 import { formatJalaliDate, formatToman, formatUsd } from "@/shared/lib/format";
-import { IncomeCategoryLabel } from "@/features/income/model/incomeConstant";
+import {
+  IncomeCategoryLabel,
+  RecurrenceRuleLabel,
+} from "@/features/income/model/incomeConstant";
 
 export class IncomeItemModel extends IncomeModel {
   get formatPrice(): string {
@@ -15,6 +18,10 @@ export class IncomeItemModel extends IncomeModel {
     return IncomeCategoryLabel[this.category];
   }
 
+  get recurrenceRuleLabel(): string {
+    return this.recurrenceRule ? RecurrenceRuleLabel[this.recurrenceRule] : "—";
+  }
+
   formatPriceUsd(tomanPerUsdRate?: number): string {
     return tomanPerUsdRate ? formatUsd(this.price / tomanPerUsdRate) : "—";
   }
@@ -27,7 +34,10 @@ export class IncomeItemModel extends IncomeModel {
     incomeItem.price = income.price;
     incomeItem.source = income.source;
     incomeItem.date = income.date;
+    incomeItem.isRecurring = income.isRecurring;
+    incomeItem.recurrenceRule = income.recurrenceRule;
     incomeItem.category = income.category;
+    incomeItem.notes = income.notes;
     incomeItem.createdAt = income.createdAt;
     incomeItem.updatedAt = income.updatedAt;
 

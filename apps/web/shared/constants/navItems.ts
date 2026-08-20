@@ -10,7 +10,7 @@ import { Routes } from "@/shared/constants/routes";
 export const mainNavItems = [
   { title: "نمای کلی", href: Routes.Root, icon: LayoutDashboard },
   { title: "درآمد", href: Routes.Incomes, icon: WalletCards },
-  { title: "هزینه‌ها", href: "#", icon: CreditCard },
+  { title: "هزینه‌ها", href: Routes.Expenses, icon: CreditCard },
   { title: "سرمایه‌گذاری", href: "#", icon: BarChart3 },
 ];
 

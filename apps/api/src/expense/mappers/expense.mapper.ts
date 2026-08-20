@@ -1,26 +1,26 @@
-import { IncomeModel } from '@repo/models';
-import { Income } from '../entities/income.entity';
-import { CreateIncomeDto } from '../dto/create-income.dto';
-import { UpdateIncomeDto } from '../dto/update-income.dto';
+import { ExpenseModel } from '@repo/models';
+import { Expense } from '../entities/expense.entity';
+import { CreateExpenseDto } from '../dto/create-expense.dto';
+import { UpdateExpenseDto } from '../dto/update-expense.dto';
 
-export class IncomeMapper {
-  static toDomain(entity: Income): IncomeModel {
+export class ExpenseMapper {
+  static toDomain(entity: Expense): ExpenseModel {
     return {
       id: entity.id,
       name: entity.name,
       price: entity.price,
-      source: entity.source,
+      category: entity.category,
       date: entity.date.getTime(),
       isRecurring: entity.isRecurring,
       recurrenceRule: entity.recurrenceRule ?? undefined,
-      category: entity.category,
+      paymentMethod: entity.paymentMethod,
       notes: entity.notes ?? undefined,
       createdAt: entity.createdAt.toISOString(),
       updatedAt: entity.updatedAt.toISOString(),
     };
   }
 
-  static toCreateEntity(dto: CreateIncomeDto): Partial<Income> {
+  static toCreateEntity(dto: CreateExpenseDto): Partial<Expense> {
     return {
       ...dto,
       date: new Date(dto.date),
@@ -29,9 +29,9 @@ export class IncomeMapper {
     };
   }
 
-  static toUpdateEntity(dto: UpdateIncomeDto): Partial<Income> {
+  static toUpdateEntity(dto: UpdateExpenseDto): Partial<Expense> {
     const { date, isRecurring, recurrenceRule, notes, ...rest } = dto;
-    const entity: Partial<Income> = rest;
+    const entity: Partial<Expense> = rest;
 
     if (date !== undefined) {
       entity.date = new Date(date);

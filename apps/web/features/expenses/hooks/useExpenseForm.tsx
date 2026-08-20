@@ -1,33 +1,33 @@
 import { classValidatorResolver } from "@hookform/resolvers/class-validator";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { CreateIncomeRequestModel } from "@repo/models";
-import { useCreateIncome } from "@/features/income/hooks/useCreateIncome";
-import { useUpdateIncome } from "@/features/income/hooks/useUpdateIncome";
-import { useIncomeStore } from "@/features/income/model/incomeStore";
-import type { IncomeFormMode } from "@/features/income/model/incomeStore";
-import { IncomeItemModel } from "@/features/income/model/incomeModel";
+import { CreateExpenseRequestModel } from "@repo/models";
+import { useCreateExpense } from "@/features/expenses/hooks/useCreateExpense";
+import { useUpdateExpense } from "@/features/expenses/hooks/useUpdateExpense";
+import { useExpenseStore } from "@/features/expenses/model/expenseStore";
+import type { ExpenseFormMode } from "@/features/expenses/model/expenseStore";
+import { ExpenseItemModel } from "@/features/expenses/model/expenseModel";
 
-const resolver = classValidatorResolver(CreateIncomeRequestModel);
+const resolver = classValidatorResolver(CreateExpenseRequestModel);
 
-interface UseIncomeFormOptions {
-  mode: IncomeFormMode;
-  initialValues: IncomeItemModel | null;
+interface UseExpenseFormOptions {
+  mode: ExpenseFormMode;
+  initialValues: ExpenseItemModel | null;
 }
 
-export function useIncomeForm({ mode, initialValues }: UseIncomeFormOptions) {
-  const isFormDialogOpen = useIncomeStore((state) => state.isFormDialogOpen);
-  const closeFormDialog = useIncomeStore((state) => state.closeFormDialog);
+export function useExpenseForm({ mode, initialValues }: UseExpenseFormOptions) {
+  const isFormDialogOpen = useExpenseStore((state) => state.isFormDialogOpen);
+  const closeFormDialog = useExpenseStore((state) => state.closeFormDialog);
   const {
-    mutate: createIncome,
+    mutate: createExpense,
     isPending: isCreating,
     errorMessage: createErrorMessage,
-  } = useCreateIncome();
+  } = useCreateExpense();
   const {
-    mutate: updateIncome,
+    mutate: updateExpense,
     isPending: isUpdating,
     errorMessage: updateErrorMessage,
-  } = useUpdateIncome();
+  } = useUpdateExpense();
 
   const {
     register,
@@ -37,7 +37,7 @@ export function useIncomeForm({ mode, initialValues }: UseIncomeFormOptions) {
     trigger,
     setValue,
     formState: { errors, isValid },
-  } = useForm<CreateIncomeRequestModel>({
+  } = useForm<CreateExpenseRequestModel>({
     resolver,
     mode: "onBlur",
     reValidateMode: "onBlur",
@@ -52,11 +52,11 @@ export function useIncomeForm({ mode, initialValues }: UseIncomeFormOptions) {
       reset({
         name: initialValues.name,
         price: initialValues.price,
-        source: initialValues.source,
+        category: initialValues.category,
         date: initialValues.date,
         isRecurring: initialValues.isRecurring,
         recurrenceRule: initialValues.recurrenceRule,
-        category: initialValues.category,
+        paymentMethod: initialValues.paymentMethod,
         notes: initialValues.notes,
       });
       void trigger();
@@ -64,45 +64,41 @@ export function useIncomeForm({ mode, initialValues }: UseIncomeFormOptions) {
       reset({
         name: "",
         price: undefined,
-        source: "",
+        category: undefined,
         date: undefined,
         isRecurring: false,
         recurrenceRule: undefined,
-        category: undefined,
+        paymentMethod: undefined,
         notes: "",
       });
     }
   }, [isFormDialogOpen, mode, initialValues, reset, trigger]);
 
   const handleRecurringChange = (checked: boolean) => {
-    setValue("isRecurring", checked, {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
-    setValue("recurrenceRule", undefined, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
+    setValue("isRecurring", checked);
+    if (!checked) {
+      setValue("recurrenceRule", undefined);
+     void trigger("recurrenceRule");
+    }
   };
 
   const onSubmit = handleSubmit((data) => {
     if (mode === "edit" && initialValues) {
-      updateIncome(
+      updateExpense(
         { id: initialValues.id, data },
         { onSuccess: () => closeFormDialog() },
       );
     } else {
-      createIncome(data, {
+      createExpense(data, {
         onSuccess: () => {
           reset({
             name: "",
             price: 0,
-            source: "",
+            category: undefined,
             date: undefined,
             isRecurring: false,
             recurrenceRule: undefined,
-            category: undefined,
+            paymentMethod: undefined,
             notes: "",
           });
           closeFormDialog();
