@@ -2,6 +2,7 @@ import {
   BarChart3,
   CircleArrowRight,
   CreditCard,
+  HandCoins,
   LayoutDashboard,
   PiggyBank,
   WalletCards,
@@ -14,6 +15,7 @@ export const mainNavItems = [
   { title: "هزینه‌ها", href: Routes.Expenses, icon: CreditCard },
   { title: "سرمایه‌گذاری", href: Routes.Investments, icon: BarChart3 },
   { title: "دارایی‌ها", href: Routes.Assets, icon: PiggyBank },
+  { title: "بدهی‌ها", href: Routes.Debts, icon: HandCoins },
 ];
 
 export const secondaryNavItems = [

@@ -21,3 +21,7 @@ export { AssetModel } from "./asset/assetModel";
 export { CreateAssetRequestModel } from "./asset/createAssetRequestModel";
 export { UpdateAssetRequestModel } from "./asset/updateAssetRequestModel";
 export { AssetCategory } from "./asset/assetCategory";
+export { DebtModel } from "./debt/debtModel";
+export { CreateDebtRequestModel } from "./debt/createDebtRequestModel";
+export { UpdateDebtRequestModel } from "./debt/updateDebtRequestModel";
+export { DebtCategory } from "./debt/debtCategory";
