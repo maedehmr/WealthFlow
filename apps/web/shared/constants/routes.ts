@@ -3,4 +3,5 @@ export enum Routes {
   Login = "/login",
   Incomes = "/incomes",
   Expenses = "/expenses",
+  Investments = "/investments",
 }

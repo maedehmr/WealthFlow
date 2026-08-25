@@ -13,3 +13,7 @@ export { UpdateExpenseRequestModel } from "./expense/updateExpenseRequestModel";
 export { ExpenseCategory } from "./expense/expenseCategory";
 export { PaymentMethod } from "./expense/paymentMethod";
 export { RecurrenceRule } from "./shared/recurrenceRule";
+export { InvestmentModel } from "./investment/investmentModel";
+export { CreateInvestmentRequestModel } from "./investment/createInvestmentRequestModel";
+export { UpdateInvestmentRequestModel } from "./investment/updateInvestmentRequestModel";
+export { InvestmentCategory } from "./investment/investmentCategory";

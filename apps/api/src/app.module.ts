@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { getDatabaseConfig } from './config/database.config';
 import { ExpenseModule } from './expense/expense.module';
 import { IncomeModule } from './income/income.module';
+import { InvestmentModule } from './investment/investment.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -21,6 +22,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     IncomeModule,
     ExpenseModule,
+    InvestmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

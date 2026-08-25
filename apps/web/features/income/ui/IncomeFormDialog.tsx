@@ -57,7 +57,7 @@ export function IncomeFormDialog() {
         if (!open) closeFormDialog();
       }}
     >
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogClose
           render={
             <Button
@@ -77,7 +77,11 @@ export function IncomeFormDialog() {
           </DialogTitle>
           <DialogDescription>اطلاعات درآمد را وارد کنید.</DialogDescription>
         </DialogHeader>
-        <form className="grid gap-4" onSubmit={onSubmit} noValidate>
+        <form
+          className="grid gap-4 sm:grid-cols-2"
+          onSubmit={onSubmit}
+          noValidate
+        >
           <div className="grid gap-2">
             <Label htmlFor="income-name">نام</Label>
             <Input id="income-name" {...register("name")} />
@@ -197,7 +201,7 @@ export function IncomeFormDialog() {
             )}
           </div>
           {isRecurring && (
-            <div className="grid gap-2">
+            <div className="grid gap-2 sm:col-span-2">
               <Label htmlFor="income-recurrence-rule">دوره تکرار</Label>
               <Controller
                 control={control}
@@ -235,7 +239,7 @@ export function IncomeFormDialog() {
               )}
             </div>
           )}
-          <div className="grid gap-2">
+          <div className="grid gap-2 sm:col-span-2">
             <Label htmlFor="income-notes">یادداشت</Label>
             <Textarea id="income-notes" {...register("notes")} />
             {errors.notes && (
@@ -245,9 +249,11 @@ export function IncomeFormDialog() {
             )}
           </div>
           {errorMessage && (
-            <p className="text-destructive text-sm">{errorMessage}</p>
+            <p className="text-destructive text-sm sm:col-span-2">
+              {errorMessage}
+            </p>
           )}
-          <DialogFooter>
+          <DialogFooter className="sm:col-span-2">
             <Button
               type="button"
               variant="outline"

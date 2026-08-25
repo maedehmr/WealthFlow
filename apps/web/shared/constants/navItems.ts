@@ -11,7 +11,7 @@ export const mainNavItems = [
   { title: "نمای کلی", href: Routes.Root, icon: LayoutDashboard },
   { title: "درآمد", href: Routes.Incomes, icon: WalletCards },
   { title: "هزینه‌ها", href: Routes.Expenses, icon: CreditCard },
-  { title: "سرمایه‌گذاری", href: "#", icon: BarChart3 },
+  { title: "سرمایه‌گذاری", href: Routes.Investments, icon: BarChart3 },
 ];
 
 export const secondaryNavItems = [
