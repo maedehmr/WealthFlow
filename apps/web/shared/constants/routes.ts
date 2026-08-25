@@ -4,4 +4,5 @@ export enum Routes {
   Incomes = "/incomes",
   Expenses = "/expenses",
   Investments = "/investments",
+  Assets = "/assets",
 }

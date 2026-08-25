@@ -17,3 +17,7 @@ export { InvestmentModel } from "./investment/investmentModel";
 export { CreateInvestmentRequestModel } from "./investment/createInvestmentRequestModel";
 export { UpdateInvestmentRequestModel } from "./investment/updateInvestmentRequestModel";
 export { InvestmentCategory } from "./investment/investmentCategory";
+export { AssetModel } from "./asset/assetModel";
+export { CreateAssetRequestModel } from "./asset/createAssetRequestModel";
+export { UpdateAssetRequestModel } from "./asset/updateAssetRequestModel";
+export { AssetCategory } from "./asset/assetCategory";

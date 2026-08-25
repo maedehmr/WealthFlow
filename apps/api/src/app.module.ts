@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AssetModule } from './asset/asset.module';
 import { AuthModule } from './auth/auth.module';
 import { getDatabaseConfig } from './config/database.config';
 import { ExpenseModule } from './expense/expense.module';
@@ -23,6 +24,7 @@ import { UsersModule } from './users/users.module';
     IncomeModule,
     ExpenseModule,
     InvestmentModule,
+    AssetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,6 +3,7 @@ import {
   CircleArrowRight,
   CreditCard,
   LayoutDashboard,
+  PiggyBank,
   WalletCards,
 } from "lucide-react";
 import { Routes } from "@/shared/constants/routes";
@@ -12,6 +13,7 @@ export const mainNavItems = [
   { title: "درآمد", href: Routes.Incomes, icon: WalletCards },
   { title: "هزینه‌ها", href: Routes.Expenses, icon: CreditCard },
   { title: "سرمایه‌گذاری", href: Routes.Investments, icon: BarChart3 },
+  { title: "دارایی‌ها", href: Routes.Assets, icon: PiggyBank },
 ];
 
 export const secondaryNavItems = [
