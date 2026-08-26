@@ -16,7 +16,7 @@ export default function MainLayout({ children }: SidebarLayoutProps) {
       </aside>
       <div className="lg:pr-72">
         <Header />
-        <main className="min-h-[calc(100svh-4rem)] p-4 pb-24 md:p-6 lg:pb-6">
+        <main className="min-h-[calc(100svh-4rem)] p-4 pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:p-6 md:pb-[calc(4.75rem+env(safe-area-inset-bottom))] lg:pb-6">
           {children}
         </main>
       </div>

@@ -10,6 +10,7 @@ import { DebtModule } from './debt/debt.module';
 import { ExpenseModule } from './expense/expense.module';
 import { IncomeModule } from './income/income.module';
 import { InvestmentModule } from './investment/investment.module';
+import { OverviewModule } from './overview/overview.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -27,6 +28,7 @@ import { UsersModule } from './users/users.module';
     InvestmentModule,
     AssetModule,
     DebtModule,
+    OverviewModule,
   ],
   controllers: [AppController],
   providers: [AppService],

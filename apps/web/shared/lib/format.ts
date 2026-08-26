@@ -10,6 +10,14 @@ export function formatJalaliDate(timestamp: number): string {
   }).format();
 }
 
+export function formatJalaliMonth(timestamp: number): string {
+  return new DateObject({
+    date: new Date(timestamp),
+    calendar: persian,
+    locale: persian_fa,
+  }).format("MMMM YYYY");
+}
+
 export function getNumberFormatter(
   locale: string = "fa-IR",
   maximumFractionDigits = 3,

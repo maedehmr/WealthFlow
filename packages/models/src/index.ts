@@ -25,3 +25,8 @@ export { DebtModel } from "./debt/debtModel";
 export { CreateDebtRequestModel } from "./debt/createDebtRequestModel";
 export { UpdateDebtRequestModel } from "./debt/updateDebtRequestModel";
 export { DebtCategory } from "./debt/debtCategory";
+export { OverviewSummaryModel } from "./overview/overviewSummaryModel";
+export { NetWorthModel } from "./overview/netWorthModel";
+export { CashFlowModel } from "./overview/cashFlowModel";
+export { MonthlyTrendItemModel } from "./overview/monthlyTrendItemModel";
+export { CategoryBreakdownItemModel } from "./overview/categoryBreakdownItemModel";
