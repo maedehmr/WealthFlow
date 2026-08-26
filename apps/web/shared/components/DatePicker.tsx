@@ -32,6 +32,7 @@ function DatePicker({
       <DatePickerLib
         calendar={persian}
         locale={persian_fa}
+        editable={false}
         calendarPosition="bottom-right"
         id={id}
         name={name}
