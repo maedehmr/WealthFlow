@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback } from "react";
+import { useMemo } from "react";
 import { Input } from "@/shared/components/Input";
 import { cn } from "@/shared/lib/utils";
+import { getNumberFormatter } from "@/shared/lib/format";
 import { useFormattedNumberInput } from "@/shared/hooks/useFormattedNumberInput";
 
-interface NumberInputProps {
+interface PriceInputProps {
   id?: string;
   name?: string;
   value?: number;
@@ -14,9 +15,10 @@ interface NumberInputProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  locale?: string;
 }
 
-function NumberInput({
+function PriceInput({
   id,
   name,
   value,
@@ -25,8 +27,13 @@ function NumberInput({
   placeholder,
   className,
   disabled,
-}: NumberInputProps) {
-  const format = useCallback((n: number) => String(n), []);
+  locale = "fa-IR",
+}: PriceInputProps) {
+  const formatter = useMemo(() => getNumberFormatter(locale), [locale]);
+  const format = useMemo(
+    () => (n: number) => formatter.format(n),
+    [formatter],
+  );
 
   const { inputRef, displayValue, handleChange } = useFormattedNumberInput({
     value,
@@ -52,4 +59,4 @@ function NumberInput({
   );
 }
 
-export { NumberInput };
+export { PriceInput };

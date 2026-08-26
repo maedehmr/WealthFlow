@@ -9,6 +9,7 @@ export * from "./Dialog";
 export * from "./Input";
 export * from "./Label";
 export * from "./NumberInput";
+export * from "./PriceInput";
 export * from "./Progress";
 export * from "./Select";
 export * from "./Separator";

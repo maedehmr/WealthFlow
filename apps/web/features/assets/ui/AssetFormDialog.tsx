@@ -15,7 +15,7 @@ import {
 } from "@/shared/components/Dialog";
 import { Input } from "@/shared/components/Input";
 import { Label } from "@/shared/components/Label";
-import { NumberInput } from "@/shared/components/NumberInput";
+import { PriceInput } from "@/shared/components/PriceInput";
 import {
   Select,
   SelectContent,
@@ -119,7 +119,7 @@ export function AssetFormDialog() {
               control={control}
               name="value"
               render={({ field }) => (
-                <NumberInput
+                <PriceInput
                   id="asset-value"
                   name={field.name}
                   value={field.value}

@@ -16,7 +16,7 @@ import {
 } from "@/shared/components/Dialog";
 import { Input } from "@/shared/components/Input";
 import { Label } from "@/shared/components/Label";
-import { NumberInput } from "@/shared/components/NumberInput";
+import { PriceInput } from "@/shared/components/PriceInput";
 import {
   Select,
   SelectContent,
@@ -95,7 +95,7 @@ export function DebtFormDialog() {
               control={control}
               name="price"
               render={({ field }) => (
-                <NumberInput
+                <PriceInput
                   id="debt-price"
                   name={field.name}
                   value={field.value}
