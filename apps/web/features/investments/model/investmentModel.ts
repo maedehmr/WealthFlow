@@ -1,5 +1,10 @@
 import { InvestmentModel } from "@repo/models";
-import { formatJalaliDate, formatToman, formatUsd } from "@/shared/lib/format";
+import {
+  formatJalaliDate,
+  formatToman,
+  formatUsd,
+  getNumberFormatter,
+} from "@/shared/lib/format";
 import {
   InvestmentCategoryLabel,
   RecurrenceRuleLabel,
@@ -8,6 +13,10 @@ import {
 export class InvestmentItemModel extends InvestmentModel {
   get formatPrice(): string {
     return `${formatToman(this.price)} تومان`;
+  }
+
+  get formatQuantity(): string {
+    return getNumberFormatter().format(this.quantity);
   }
 
   get formatPurchaseDate(): string {

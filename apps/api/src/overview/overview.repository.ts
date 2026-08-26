@@ -43,10 +43,7 @@ export class OverviewRepository {
   async getTotalInvestmentValue(): Promise<number> {
     const raw = await this.investmentRepository
       .createQueryBuilder('investment')
-      .select(
-        'COALESCE(SUM(investment.price * investment.quantity), 0)',
-        'total',
-      )
+      .select('COALESCE(SUM(investment.price), 0)', 'total')
       .getRawOne<{ total: string }>();
     return Number(raw?.total ?? 0);
   }
@@ -133,10 +130,7 @@ export class OverviewRepository {
     return this.investmentRepository
       .createQueryBuilder('investment')
       .select('investment.category', 'category')
-      .addSelect(
-        'COALESCE(SUM(investment.price * investment.quantity), 0)',
-        'total',
-      )
+      .addSelect('COALESCE(SUM(investment.price), 0)', 'total')
       .groupBy('investment.category')
       .orderBy('total', 'DESC')
       .getRawMany<RawCategoryBreakdown>();

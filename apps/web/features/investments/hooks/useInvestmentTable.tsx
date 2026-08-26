@@ -41,7 +41,11 @@ export function useInvestmentTable() {
         header: "قیمت (دلار)",
         cell: (row: InvestmentItemModel) => row.formatPriceUsd(tomanPerUsdRate),
       },
-      { key: "quantity", header: "تعداد" },
+      {
+        key: "quantity",
+        header: "تعداد",
+        cell: (row: InvestmentItemModel) => row.formatQuantity,
+      },
       {
         key: "purchaseDate",
         header: "تاریخ خرید",
