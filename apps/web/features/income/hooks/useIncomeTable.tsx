@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/shared/components/Button";
-import { useExchangeRate } from "@/features/income/hooks/useExchangeRate";
+import { useCurrencyRates } from "@/features/currencyRates/hooks/useCurrencyRates";
 import { useIncomes } from "@/features/income/hooks/useIncomes";
 import { useIncomeStore } from "@/features/income/model/incomeStore";
 import { TableColumnDef, useTable } from "@/shared/hooks/useTable";
@@ -15,8 +15,9 @@ export function useIncomeTable() {
     isLoading: isIncomesLoading,
     errorMessage,
   } = useIncomes();
-  const { data: tomanPerUsdRate, isLoading: isExchangeRateLoading } =
-    useExchangeRate();
+  const { ratesByCode, isLoading: isExchangeRateLoading } =
+    useCurrencyRates();
+  const tomanPerUsdRate = ratesByCode.get("USD")?.rate;
   const isLoading = isIncomesLoading || isExchangeRateLoading;
   const openEditDialog = useIncomeStore((state) => state.openEditDialog);
   const openDeleteDialog = useIncomeStore((state) => state.openDeleteDialog);

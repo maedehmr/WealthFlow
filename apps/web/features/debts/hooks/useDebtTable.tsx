@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/shared/components/Button";
-import { useExchangeRate } from "@/features/debts/hooks/useExchangeRate";
+import { useCurrencyRates } from "@/features/currencyRates/hooks/useCurrencyRates";
 import { useDebts } from "@/features/debts/hooks/useDebts";
 import { useDebtStore } from "@/features/debts/model/debtStore";
 import { TableColumnDef, useTable } from "@/shared/hooks/useTable";
@@ -11,8 +11,9 @@ import { DebtItemModel } from "@/features/debts/model/debtModel";
 
 export function useDebtTable() {
   const { data: debts, isLoading: isDebtsLoading, errorMessage } = useDebts();
-  const { data: tomanPerUsdRate, isLoading: isExchangeRateLoading } =
-    useExchangeRate();
+  const { ratesByCode, isLoading: isExchangeRateLoading } =
+    useCurrencyRates();
+  const tomanPerUsdRate = ratesByCode.get("USD")?.rate;
   const isLoading = isDebtsLoading || isExchangeRateLoading;
   const openEditDialog = useDebtStore((state) => state.openEditDialog);
   const openDeleteDialog = useDebtStore((state) => state.openDeleteDialog);

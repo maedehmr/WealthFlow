@@ -83,7 +83,8 @@ export class OverviewService {
         monthIncome: cashFlow.income,
         monthExpense: cashFlow.expense,
         savings,
-        savingsRate: cashFlow.income > 0 ? (savings / cashFlow.income) * 100 : 0,
+        savingsRate:
+          cashFlow.income > 0 ? (savings / cashFlow.income) * 100 : 0,
       },
       monthlyTrend: buildMonthlyTrend(
         incomeTrend,
@@ -110,7 +111,10 @@ function buildMonthlyTrend(
     incomeRows.map((row) => [monthKey(new Date(row.month)), Number(row.total)]),
   );
   const expenseByMonth = new Map(
-    expenseRows.map((row) => [monthKey(new Date(row.month)), Number(row.total)]),
+    expenseRows.map((row) => [
+      monthKey(new Date(row.month)),
+      Number(row.total),
+    ]),
   );
 
   return Array.from({ length: monthsBack }, (_, index) => {

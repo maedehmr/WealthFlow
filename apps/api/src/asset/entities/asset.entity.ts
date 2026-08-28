@@ -1,4 +1,4 @@
-import { AssetCategory } from '@repo/models';
+import { AssetCategory, ValuationMode } from '@repo/models';
 import {
   Column,
   CreateDateColumn,
@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { numberTransformer } from '../../shared/transformers/number.transformer';
 
 @Entity('assets')
 export class Asset {
@@ -24,10 +25,7 @@ export class Asset {
 
   @Column({
     type: 'bigint',
-    transformer: {
-      to: (value: number) => value,
-      from: (value: string) => Number(value),
-    },
+    transformer: numberTransformer,
   })
   value: number;
 
@@ -39,6 +37,35 @@ export class Asset {
 
   @Column({ type: 'text', nullable: true })
   notes: string | null;
+
+  @Column({
+    type: 'enum',
+    enum: ValuationMode,
+    default: ValuationMode.Manual,
+  })
+  valuationMode: ValuationMode;
+
+  @Column({ type: 'varchar', length: 32, nullable: true })
+  currencyCode: string | null;
+
+  @Column({
+    type: 'decimal',
+    precision: 18,
+    scale: 8,
+    nullable: true,
+    transformer: numberTransformer,
+  })
+  foreignAmount: number | null;
+
+  @Column({
+    type: 'bigint',
+    nullable: true,
+    transformer: numberTransformer,
+  })
+  latestManualValue: number | null;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  manualValueUpdatedAt: Date | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;

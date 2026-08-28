@@ -6,7 +6,9 @@ import {
   IsOptional,
   IsPositive,
   IsString,
+  ValidateIf,
 } from "class-validator";
+import { ValuationMode } from "../shared/valuationMode";
 import { AssetCategory } from "./assetCategory";
 
 export class CreateAssetRequestModel {
@@ -35,4 +37,25 @@ export class CreateAssetRequestModel {
   @IsOptional()
   @IsString({ message: "یادداشت باید متن باشد" })
   notes?: string;
+
+  @IsEnum(ValuationMode, { message: "نوع ارزش‌گذاری نامعتبر است" })
+  valuationMode!: ValuationMode;
+
+  @ValidateIf((o) => o.valuationMode !== ValuationMode.Manual)
+  @IsString({ message: "کد ارز باید متن باشد" })
+  @IsNotEmpty({ message: "کد ارز الزامی است" })
+  currencyCode?: string;
+
+  @ValidateIf((o) => o.valuationMode === ValuationMode.CurrencyExposed)
+  @Type(() => Number)
+  @IsNumber({}, { message: "مقدار ارز باید عدد باشد" })
+  @IsPositive({ message: "مقدار ارز باید مثبت باشد" })
+  foreignAmount?: number;
+
+  @ValidateIf((o) => o.valuationMode === ValuationMode.Manual)
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({}, { message: "ارزش فعلی باید عدد باشد" })
+  @IsPositive({ message: "ارزش فعلی باید مثبت باشد" })
+  latestManualValue?: number;
 }

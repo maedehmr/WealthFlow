@@ -5,20 +5,25 @@ import { UpdateInvestmentDto } from '../dto/update-investment.dto';
 
 export class InvestmentMapper {
   static toDomain(entity: Investment): InvestmentModel {
-    return {
+    return Object.assign(new InvestmentModel(), {
       id: entity.id,
       name: entity.name,
       category: entity.category,
       price: entity.price,
-      quantity: entity.quantity,
       purchaseDate: entity.purchaseDate.getTime(),
       broker: entity.broker ?? undefined,
       isRecurring: entity.isRecurring,
       recurrenceRule: entity.recurrenceRule ?? undefined,
       notes: entity.notes ?? undefined,
+      valuationMode: entity.valuationMode,
+      quantity: entity.quantity,
+      currencyCode: entity.currencyCode ?? undefined,
+      foreignAmount: entity.foreignAmount ?? undefined,
+      latestManualValue: entity.latestManualValue ?? undefined,
+      manualValueUpdatedAt: entity.manualValueUpdatedAt?.getTime() ?? undefined,
       createdAt: entity.createdAt.toISOString(),
       updatedAt: entity.updatedAt.toISOString(),
-    };
+    });
   }
 
   static toCreateEntity(dto: CreateInvestmentDto): Partial<Investment> {
@@ -28,6 +33,11 @@ export class InvestmentMapper {
       broker: dto.broker ?? null,
       recurrenceRule: dto.isRecurring ? (dto.recurrenceRule ?? null) : null,
       notes: dto.notes ?? null,
+      currencyCode: dto.currencyCode ?? null,
+      foreignAmount: dto.foreignAmount ?? null,
+      latestManualValue: dto.latestManualValue ?? null,
+      manualValueUpdatedAt:
+        dto.latestManualValue !== undefined ? new Date() : null,
     };
   }
 
@@ -38,6 +48,9 @@ export class InvestmentMapper {
       recurrenceRule,
       notes,
       broker,
+      currencyCode,
+      foreignAmount,
+      latestManualValue,
       ...rest
     } = dto;
     const entity: Partial<Investment> = rest;
@@ -56,6 +69,16 @@ export class InvestmentMapper {
       entity.recurrenceRule = isRecurring ? (recurrenceRule ?? null) : null;
     } else if (recurrenceRule !== undefined) {
       entity.recurrenceRule = recurrenceRule;
+    }
+    if (currencyCode !== undefined) {
+      entity.currencyCode = currencyCode ?? null;
+    }
+    if (foreignAmount !== undefined) {
+      entity.foreignAmount = foreignAmount;
+    }
+    if (latestManualValue !== undefined) {
+      entity.latestManualValue = latestManualValue;
+      entity.manualValueUpdatedAt = new Date();
     }
 
     return entity;

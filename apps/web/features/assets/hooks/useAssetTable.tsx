@@ -3,7 +3,8 @@
 import { useMemo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/shared/components/Button";
-import { useExchangeRate } from "@/features/assets/hooks/useExchangeRate";
+import { Badge } from "@/shared/components/Badge";
+import { useCurrencyRates } from "@/features/currencyRates/hooks/useCurrencyRates";
 import { useAssets } from "@/features/assets/hooks/useAssets";
 import { useAssetStore } from "@/features/assets/model/assetStore";
 import { TableColumnDef, useTable } from "@/shared/hooks/useTable";
@@ -15,8 +16,8 @@ export function useAssetTable() {
     isLoading: isAssetsLoading,
     errorMessage,
   } = useAssets();
-  const { data: tomanPerUsdRate, isLoading: isExchangeRateLoading } =
-    useExchangeRate();
+  const { ratesByCode, isLoading: isExchangeRateLoading } =
+    useCurrencyRates();
   const isLoading = isAssetsLoading || isExchangeRateLoading;
   const openEditDialog = useAssetStore((state) => state.openEditDialog);
   const openDeleteDialog = useAssetStore((state) => state.openDeleteDialog);
@@ -37,7 +38,44 @@ export function useAssetTable() {
       {
         key: "valueUsd",
         header: "ارزش (دلار)",
-        cell: (row: AssetItemModel) => row.formatValueUsd(tomanPerUsdRate),
+        cell: (row: AssetItemModel) =>
+          row.formatValueUsd(ratesByCode.get("USD")?.rate),
+      },
+      {
+        key: "currentValue",
+        header: "ارزش فعلی",
+        cell: (row: AssetItemModel) => (
+          <div className="flex items-center gap-2">
+            <span>{row.formatCurrentValue(ratesByCode)}</span>
+            {row.isManual && <Badge variant="outline">دستی</Badge>}
+          </div>
+        ),
+      },
+      {
+        key: "profitAmount",
+        header: "سود/زیان (تومان)",
+        cell: (row: AssetItemModel) => {
+          const isProfit = row.isProfit(ratesByCode);
+          if (isProfit === null) return "—";
+          return (
+            <span className={isProfit ? "text-chart-3" : "text-destructive"}>
+              {row.formatProfitAmount(ratesByCode)}
+            </span>
+          );
+        },
+      },
+      {
+        key: "profitPercentage",
+        header: "سود/زیان (%)",
+        cell: (row: AssetItemModel) => {
+          const isProfit = row.isProfit(ratesByCode);
+          if (isProfit === null) return "—";
+          return (
+            <span className={isProfit ? "text-chart-3" : "text-destructive"}>
+              {row.formatProfitPercentage(ratesByCode)}
+            </span>
+          );
+        },
       },
       {
         key: "acquisitionDate",
@@ -50,7 +88,7 @@ export function useAssetTable() {
         cell: (row: AssetItemModel) => row.location ?? "—",
       },
     ],
-    [tomanPerUsdRate],
+    [ratesByCode],
   );
 
   const renderActions = useMemo(() => {

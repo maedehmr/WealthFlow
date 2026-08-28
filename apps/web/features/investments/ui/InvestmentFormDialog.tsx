@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { Controller } from "react-hook-form";
+import { ValuationMode } from "@repo/models";
 import { Button } from "@/shared/components/Button";
 import { Checkbox } from "@/shared/components/Checkbox";
 import { DatePicker } from "@/shared/components/DatePicker";
@@ -30,6 +31,7 @@ import { useInvestmentForm } from "@/features/investments/hooks/useInvestmentFor
 import {
   InvestmentCategoryLabel,
   RecurrenceRuleLabel,
+  ValuationModeLabel,
 } from "@/features/investments/model/investmentConstant";
 import { useInvestmentStore } from "@/features/investments/model/investmentStore";
 
@@ -50,6 +52,8 @@ export function InvestmentFormDialog() {
     isValid,
     isRecurring,
     handleRecurringChange,
+    valuationMode,
+    handleValuationModeChange,
     onSubmit,
     isPending,
     errorMessage,
@@ -134,7 +138,11 @@ export function InvestmentFormDialog() {
             )}
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="investment-price">قیمت (تومان)</Label>
+            <Label htmlFor="investment-price">
+              {valuationMode === ValuationMode.CurrencyExposed
+                ? "نرخ خرید هر واحد ارز (تومان)"
+                : "قیمت (تومان)"}
+            </Label>
             <Controller
               control={control}
               name="price"
@@ -152,28 +160,6 @@ export function InvestmentFormDialog() {
             {errors.price && (
               <p className="text-destructive text-sm">
                 {errors.price.message}
-              </p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="investment-quantity">تعداد/مقدار</Label>
-            <Controller
-              control={control}
-              name="quantity"
-              render={({ field }) => (
-                <NumberInput
-                  id="investment-quantity"
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-            {errors.quantity && (
-              <p className="text-destructive text-sm">
-                {errors.quantity.message}
               </p>
             )}
           </div>
@@ -208,6 +194,136 @@ export function InvestmentFormDialog() {
               </p>
             )}
           </div>
+          <div className="grid gap-2 sm:col-span-2">
+            <Label htmlFor="investment-valuation-mode">نوع ارزش‌گذاری</Label>
+            <Controller
+              control={control}
+              name="valuationMode"
+              render={({ field }) => (
+                <Select
+                  name={field.name}
+                  items={ValuationModeLabel}
+                  value={field.value ?? null}
+                  onValueChange={(value) =>
+                    handleValuationModeChange(value as ValuationMode)
+                  }
+                  onOpenChange={(open) => {
+                    if (!open) field.onBlur();
+                  }}
+                  disabled={field.disabled}
+                >
+                  <SelectTrigger id="investment-valuation-mode">
+                    <SelectValue placeholder="انتخاب کنید" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(ValuationModeLabel).map(
+                      ([value, label]) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ),
+                    )}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.valuationMode && (
+              <p className="text-destructive text-sm">
+                {errors.valuationMode.message}
+              </p>
+            )}
+          </div>
+          {valuationMode !== ValuationMode.CurrencyExposed && (
+            <div className="grid gap-2 sm:col-span-2">
+              <Label htmlFor="investment-quantity">تعداد/مقدار</Label>
+              <Controller
+                control={control}
+                name="quantity"
+                render={({ field }) => (
+                  <NumberInput
+                    id="investment-quantity"
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    disabled={field.disabled}
+                  />
+                )}
+              />
+              {errors.quantity && (
+                <p className="text-destructive text-sm">
+                  {errors.quantity.message}
+                </p>
+              )}
+            </div>
+          )}
+          {valuationMode && valuationMode !== ValuationMode.Manual && (
+            <div className="grid gap-2">
+              <Label htmlFor="investment-currency-code">کد ارز</Label>
+              <Input
+                id="investment-currency-code"
+                placeholder="USD"
+                {...register("currencyCode")}
+              />
+              {errors.currencyCode && (
+                <p className="text-destructive text-sm">
+                  {errors.currencyCode.message}
+                </p>
+              )}
+            </div>
+          )}
+          {valuationMode === ValuationMode.CurrencyExposed && (
+            <div className="grid gap-2">
+              <Label htmlFor="investment-foreign-amount">
+                مقدار ارز (مثلاً تعداد دلار)
+              </Label>
+              <Controller
+                control={control}
+                name="foreignAmount"
+                render={({ field }) => (
+                  <NumberInput
+                    id="investment-foreign-amount"
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    disabled={field.disabled}
+                  />
+                )}
+              />
+              {errors.foreignAmount && (
+                <p className="text-destructive text-sm">
+                  {errors.foreignAmount.message}
+                </p>
+              )}
+            </div>
+          )}
+          {valuationMode === ValuationMode.Manual && (
+            <div className="grid gap-2 sm:col-span-2">
+              <Label htmlFor="investment-latest-manual-value">
+                ارزش فعلی (تومان)
+              </Label>
+              <Controller
+                control={control}
+                name="latestManualValue"
+                render={({ field }) => (
+                  <PriceInput
+                    id="investment-latest-manual-value"
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    disabled={field.disabled}
+                  />
+                )}
+              />
+              {errors.latestManualValue && (
+                <p className="text-destructive text-sm">
+                  {errors.latestManualValue.message}
+                </p>
+              )}
+            </div>
+          )}
           <div className="flex items-center gap-2">
             <Controller
               control={control}

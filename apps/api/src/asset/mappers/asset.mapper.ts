@@ -5,7 +5,7 @@ import { UpdateAssetDto } from '../dto/update-asset.dto';
 
 export class AssetMapper {
   static toDomain(entity: Asset): AssetModel {
-    return {
+    return Object.assign(new AssetModel(), {
       id: entity.id,
       name: entity.name,
       category: entity.category,
@@ -13,9 +13,14 @@ export class AssetMapper {
       acquisitionDate: entity.acquisitionDate?.getTime() ?? undefined,
       location: entity.location ?? undefined,
       notes: entity.notes ?? undefined,
+      valuationMode: entity.valuationMode,
+      currencyCode: entity.currencyCode ?? undefined,
+      foreignAmount: entity.foreignAmount ?? undefined,
+      latestManualValue: entity.latestManualValue ?? undefined,
+      manualValueUpdatedAt: entity.manualValueUpdatedAt?.getTime() ?? undefined,
       createdAt: entity.createdAt.toISOString(),
       updatedAt: entity.updatedAt.toISOString(),
-    };
+    });
   }
 
   static toCreateEntity(dto: CreateAssetDto): Partial<Asset> {
@@ -26,11 +31,24 @@ export class AssetMapper {
         : null,
       location: dto.location ?? null,
       notes: dto.notes ?? null,
+      currencyCode: dto.currencyCode ?? null,
+      foreignAmount: dto.foreignAmount ?? null,
+      latestManualValue: dto.latestManualValue ?? null,
+      manualValueUpdatedAt:
+        dto.latestManualValue !== undefined ? new Date() : null,
     };
   }
 
   static toUpdateEntity(dto: UpdateAssetDto): Partial<Asset> {
-    const { acquisitionDate, location, notes, ...rest } = dto;
+    const {
+      acquisitionDate,
+      location,
+      notes,
+      currencyCode,
+      foreignAmount,
+      latestManualValue,
+      ...rest
+    } = dto;
     const entity: Partial<Asset> = rest;
 
     if (acquisitionDate !== undefined) {
@@ -43,6 +61,16 @@ export class AssetMapper {
     }
     if (notes !== undefined) {
       entity.notes = notes ?? null;
+    }
+    if (currencyCode !== undefined) {
+      entity.currencyCode = currencyCode ?? null;
+    }
+    if (foreignAmount !== undefined) {
+      entity.foreignAmount = foreignAmount;
+    }
+    if (latestManualValue !== undefined) {
+      entity.latestManualValue = latestManualValue;
+      entity.manualValueUpdatedAt = new Date();
     }
 
     return entity;

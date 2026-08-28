@@ -3,7 +3,8 @@
 import { useMemo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/shared/components/Button";
-import { useExchangeRate } from "@/features/investments/hooks/useExchangeRate";
+import { Badge } from "@/shared/components/Badge";
+import { useCurrencyRates } from "@/features/currencyRates/hooks/useCurrencyRates";
 import { useInvestments } from "@/features/investments/hooks/useInvestments";
 import { useInvestmentStore } from "@/features/investments/model/investmentStore";
 import { TableColumnDef, useTable } from "@/shared/hooks/useTable";
@@ -15,8 +16,8 @@ export function useInvestmentTable() {
     isLoading: isInvestmentsLoading,
     errorMessage,
   } = useInvestments();
-  const { data: tomanPerUsdRate, isLoading: isExchangeRateLoading } =
-    useExchangeRate();
+  const { ratesByCode, isLoading: isExchangeRateLoading } =
+    useCurrencyRates();
   const isLoading = isInvestmentsLoading || isExchangeRateLoading;
   const openEditDialog = useInvestmentStore((state) => state.openEditDialog);
   const openDeleteDialog = useInvestmentStore(
@@ -39,12 +40,50 @@ export function useInvestmentTable() {
       {
         key: "priceUsd",
         header: "قیمت (دلار)",
-        cell: (row: InvestmentItemModel) => row.formatPriceUsd(tomanPerUsdRate),
+        cell: (row: InvestmentItemModel) =>
+          row.formatPriceUsd(ratesByCode.get("USD")?.rate),
       },
       {
         key: "quantity",
         header: "تعداد",
-        cell: (row: InvestmentItemModel) => row.formatQuantity,
+        cell: (row: InvestmentItemModel) =>
+          row.isCurrencyExposed ? row.formatForeignAmount : row.formatQuantity,
+      },
+      {
+        key: "currentValue",
+        header: "ارزش فعلی",
+        cell: (row: InvestmentItemModel) => (
+          <div className="flex items-center gap-2">
+            <span>{row.formatCurrentValue(ratesByCode)}</span>
+            {row.isManual && <Badge variant="outline">دستی</Badge>}
+          </div>
+        ),
+      },
+      {
+        key: "profitAmount",
+        header: "سود/زیان (تومان)",
+        cell: (row: InvestmentItemModel) => {
+          const isProfit = row.isProfit(ratesByCode);
+          if (isProfit === null) return "—";
+          return (
+            <span className={isProfit ? "text-chart-3" : "text-destructive"}>
+              {row.formatProfitAmount(ratesByCode)}
+            </span>
+          );
+        },
+      },
+      {
+        key: "profitPercentage",
+        header: "سود/زیان (%)",
+        cell: (row: InvestmentItemModel) => {
+          const isProfit = row.isProfit(ratesByCode);
+          if (isProfit === null) return "—";
+          return (
+            <span className={isProfit ? "text-chart-3" : "text-destructive"}>
+              {row.formatProfitPercentage(ratesByCode)}
+            </span>
+          );
+        },
       },
       {
         key: "purchaseDate",
@@ -57,7 +96,7 @@ export function useInvestmentTable() {
         cell: (row: InvestmentItemModel) => row.broker ?? "—",
       },
     ],
-    [tomanPerUsdRate],
+    [ratesByCode],
   );
 
   const renderActions = useMemo(() => {

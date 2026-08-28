@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/shared/components/Button";
-import { useExchangeRate } from "@/features/expenses/hooks/useExchangeRate";
+import { useCurrencyRates } from "@/features/currencyRates/hooks/useCurrencyRates";
 import { useExpenses } from "@/features/expenses/hooks/useExpenses";
 import { useExpenseStore } from "@/features/expenses/model/expenseStore";
 import { TableColumnDef, useTable } from "@/shared/hooks/useTable";
@@ -15,8 +15,9 @@ export function useExpenseTable() {
     isLoading: isExpensesLoading,
     errorMessage,
   } = useExpenses();
-  const { data: tomanPerUsdRate, isLoading: isExchangeRateLoading } =
-    useExchangeRate();
+  const { ratesByCode, isLoading: isExchangeRateLoading } =
+    useCurrencyRates();
+  const tomanPerUsdRate = ratesByCode.get("USD")?.rate;
   const isLoading = isExpensesLoading || isExchangeRateLoading;
   const openEditDialog = useExpenseStore((state) => state.openEditDialog);
   const openDeleteDialog = useExpenseStore((state) => state.openDeleteDialog);
