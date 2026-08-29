@@ -5,5 +5,7 @@ export enum AssetCategory {
   Vehicle = "vehicle",
   Jewelry = "jewelry",
   Equipment = "equipment",
+  Gold = "gold",
+  Dollar = "dollar",
   Other = "other",
 }

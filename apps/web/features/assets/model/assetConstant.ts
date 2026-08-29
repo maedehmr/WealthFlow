@@ -1,4 +1,4 @@
-import { AssetCategory, ValuationMode } from "@repo/models";
+import { AssetCategory } from "@repo/models";
 
 export const AssetCategoryLabel: Record<AssetCategory, string> = {
   [AssetCategory.Cash]: "نقد",
@@ -7,12 +7,9 @@ export const AssetCategoryLabel: Record<AssetCategory, string> = {
   [AssetCategory.Vehicle]: "خودرو",
   [AssetCategory.Jewelry]: "جواهرات",
   [AssetCategory.Equipment]: "تجهیزات",
+  [AssetCategory.Gold]: "طلا",
+  [AssetCategory.Dollar]: "دلار",
   [AssetCategory.Other]: "سایر",
-};
-
-export const ValuationModeLabel: Record<ValuationMode, string> = {
-  [ValuationMode.CurrencyExposed]: "پول نقد ارزی",
-  [ValuationMode.Manual]: "دستی",
 };
 
 export enum AssetQueryKey {

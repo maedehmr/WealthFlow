@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 import { Controller } from "react-hook-form";
-import { ValuationMode } from "@repo/models";
+import { AssetCategory } from "@repo/models";
 import { Button } from "@/shared/components/Button";
 import { DatePicker } from "@/shared/components/DatePicker";
 import {
@@ -27,11 +27,22 @@ import {
 } from "@/shared/components/Select";
 import { Textarea } from "@/shared/components/Textarea";
 import { useAssetForm } from "@/features/assets/hooks/useAssetForm";
-import {
-  AssetCategoryLabel,
-  ValuationModeLabel,
-} from "@/features/assets/model/assetConstant";
+import { AssetCategoryLabel } from "@/features/assets/model/assetConstant";
 import { useAssetStore } from "@/features/assets/model/assetStore";
+
+function isDynamicCategory(category?: AssetCategory): boolean {
+  return category === AssetCategory.Gold || category === AssetCategory.Dollar;
+}
+
+function valueLabel(category?: AssetCategory): string {
+  if (category === AssetCategory.Gold) return "قیمت خرید هر گرم (تومان)";
+  if (category === AssetCategory.Dollar) return "نرخ خرید هر دلار (تومان)";
+  return "قیمت خرید (تومان)";
+}
+
+function quantityLabel(category?: AssetCategory): string {
+  return category === AssetCategory.Gold ? "مقدار (گرم)" : "مقدار (دلار)";
+}
 
 export function AssetFormDialog() {
   const isFormDialogOpen = useAssetStore((state) => state.isFormDialogOpen);
@@ -44,14 +55,13 @@ export function AssetFormDialog() {
     control,
     errors,
     isValid,
-    valuationMode,
-    handleValuationModeChange,
+    category,
     onSubmit,
     isPending,
     errorMessage,
   } = useAssetForm({ mode: formMode, initialValues: selectedAsset });
 
-  const isManual = !valuationMode || valuationMode === ValuationMode.Manual;
+  const showQuantity = isDynamicCategory(category);
 
   return (
     <Dialog
@@ -130,9 +140,7 @@ export function AssetFormDialog() {
             )}
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="asset-value">
-              {isManual ? "ارزش (تومان)" : "قیمت خرید هر واحد (تومان)"}
-            </Label>
+            <Label htmlFor="asset-value">{valueLabel(category)}</Label>
             <Controller
               control={control}
               name="value"
@@ -151,6 +159,30 @@ export function AssetFormDialog() {
               <p className="text-destructive text-sm">{errors.value.message}</p>
             )}
           </div>
+          {showQuantity && (
+            <div className="grid gap-2">
+              <Label htmlFor="asset-quantity">{quantityLabel(category)}</Label>
+              <Controller
+                control={control}
+                name="quantity"
+                render={({ field }) => (
+                  <NumberInput
+                    id="asset-quantity"
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    disabled={field.disabled}
+                  />
+                )}
+              />
+              {errors.quantity && (
+                <p className="text-destructive text-sm">
+                  {errors.quantity.message}
+                </p>
+              )}
+            </div>
+          )}
           <div className="grid gap-2">
             <Label htmlFor="asset-acquisition-date">تاریخ تملک</Label>
             <Controller
@@ -173,112 +205,6 @@ export function AssetFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2 sm:col-span-2">
-            <Label htmlFor="asset-valuation-mode">نوع ارزش‌گذاری</Label>
-            <Controller
-              control={control}
-              name="valuationMode"
-              render={({ field }) => (
-                <Select
-                  name={field.name}
-                  items={ValuationModeLabel}
-                  value={field.value ?? null}
-                  onValueChange={(value) =>
-                    handleValuationModeChange(value as ValuationMode)
-                  }
-                  onOpenChange={(open) => {
-                    if (!open) field.onBlur();
-                  }}
-                  disabled={field.disabled}
-                >
-                  <SelectTrigger id="asset-valuation-mode">
-                    <SelectValue placeholder="انتخاب کنید" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(ValuationModeLabel).map(
-                      ([value, label]) => (
-                        <SelectItem key={value} value={value}>
-                          {label}
-                        </SelectItem>
-                      ),
-                    )}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.valuationMode && (
-              <p className="text-destructive text-sm">
-                {errors.valuationMode.message}
-              </p>
-            )}
-          </div>
-          {!isManual && (
-            <div className="grid gap-2">
-              <Label htmlFor="asset-currency-code">کد ارز</Label>
-              <Input
-                id="asset-currency-code"
-                placeholder="USD"
-                {...register("currencyCode")}
-              />
-              {errors.currencyCode && (
-                <p className="text-destructive text-sm">
-                  {errors.currencyCode.message}
-                </p>
-              )}
-            </div>
-          )}
-          {valuationMode === ValuationMode.CurrencyExposed && (
-            <div className="grid gap-2">
-              <Label htmlFor="asset-foreign-amount">
-                مقدار ارز (مثلاً تعداد دلار)
-              </Label>
-              <Controller
-                control={control}
-                name="foreignAmount"
-                render={({ field }) => (
-                  <NumberInput
-                    id="asset-foreign-amount"
-                    name={field.name}
-                    value={field.value}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    disabled={field.disabled}
-                  />
-                )}
-              />
-              {errors.foreignAmount && (
-                <p className="text-destructive text-sm">
-                  {errors.foreignAmount.message}
-                </p>
-              )}
-            </div>
-          )}
-          {isManual && (
-            <div className="grid gap-2 sm:col-span-2">
-              <Label htmlFor="asset-latest-manual-value">
-                ارزش فعلی (تومان)
-              </Label>
-              <Controller
-                control={control}
-                name="latestManualValue"
-                render={({ field }) => (
-                  <PriceInput
-                    id="asset-latest-manual-value"
-                    name={field.name}
-                    value={field.value}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    disabled={field.disabled}
-                  />
-                )}
-              />
-              {errors.latestManualValue && (
-                <p className="text-destructive text-sm">
-                  {errors.latestManualValue.message}
-                </p>
-              )}
-            </div>
-          )}
           <div className="grid gap-2 sm:col-span-2">
             <Label htmlFor="asset-location">محل نگهداری</Label>
             <Input id="asset-location" {...register("location")} />

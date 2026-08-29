@@ -3,7 +3,6 @@
 import { useMemo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/shared/components/Button";
-import { Badge } from "@/shared/components/Badge";
 import { useCurrencyRates } from "@/features/currencyRates/hooks/useCurrencyRates";
 import { useAssets } from "@/features/assets/hooks/useAssets";
 import { useAssetStore } from "@/features/assets/model/assetStore";
@@ -32,24 +31,18 @@ export function useAssetTable() {
       },
       {
         key: "value",
-        header: "ارزش (تومان)",
+        header: "قیمت خرید (تومان)",
         cell: (row: AssetItemModel) => row.formatValue,
       },
       {
-        key: "valueUsd",
-        header: "ارزش (دلار)",
-        cell: (row: AssetItemModel) =>
-          row.formatValueUsd(ratesByCode.get("USD")?.rate),
+        key: "quantity",
+        header: "مقدار",
+        cell: (row: AssetItemModel) => row.formatQuantity,
       },
       {
         key: "currentValue",
         header: "ارزش فعلی",
-        cell: (row: AssetItemModel) => (
-          <div className="flex items-center gap-2">
-            <span>{row.formatCurrentValue(ratesByCode)}</span>
-            {row.isManual && <Badge variant="outline">دستی</Badge>}
-          </div>
-        ),
+        cell: (row: AssetItemModel) => row.formatCurrentValue(ratesByCode),
       },
       {
         key: "profitAmount",

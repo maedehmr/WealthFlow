@@ -1,13 +1,7 @@
-import {
-  AssetModel,
-  HasCurrencyExposure,
-  ManualValuationModel,
-  ValuationMode,
-} from "@repo/models";
+import { AssetModel, rateCodeForCategory } from "@repo/models";
 import {
   formatJalaliDate,
   formatToman,
-  formatUsd,
   getNumberFormatter,
 } from "@/shared/lib/format";
 import { AssetCategoryLabel } from "@/features/assets/model/assetConstant";
@@ -18,14 +12,14 @@ export class AssetItemModel extends AssetModel {
     return `${formatToman(this.value)} تومان`;
   }
 
-  get formatForeignAmount(): string {
-    return this.foreignAmount === undefined
+  get formatQuantity(): string {
+    return this.quantity === undefined
       ? "—"
-      : getNumberFormatter().format(this.foreignAmount);
+      : getNumberFormatter().format(this.quantity);
   }
 
-  get isCurrencyExposed(): boolean {
-    return this.valuationMode === ValuationMode.CurrencyExposed;
+  get isDynamic(): boolean {
+    return rateCodeForCategory(this.category) !== null;
   }
 
   get formatAcquisitionDate(): string {
@@ -36,71 +30,39 @@ export class AssetItemModel extends AssetModel {
     return AssetCategoryLabel[this.category];
   }
 
-  formatValueUsd(tomanPerUsdRate?: number): string {
-    return tomanPerUsdRate ? formatUsd(this.value / tomanPerUsdRate) : "—";
-  }
-
-  get isManual(): boolean {
-    return this.valuationMode === ValuationMode.Manual;
-  }
-
-  private resolveRateInput(
+  private resolveRate(
     ratesByCode: Map<string, CurrencyRateItemModel>,
   ): number | null {
-    if (this.valuationMode === ValuationMode.CurrencyExposed) {
-      const rate = this.currencyCode
-        ? ratesByCode.get(this.currencyCode)?.rate
-        : undefined;
-      if (rate === undefined || this.foreignAmount === undefined) {
-        return null;
-      }
-      return rate;
-    }
-    return null;
+    const code = rateCodeForCategory(this.category);
+    if (!code || this.quantity === undefined) return null;
+    const rate = ratesByCode.get(code)?.rate;
+    return rate === undefined ? null : rate;
   }
 
   currentValue(ratesByCode: Map<string, CurrencyRateItemModel>): number | null {
-    if (this.isManual) {
-      return (this.valuationHandler as ManualValuationModel).currentValue;
-    }
-    const rateInput = this.resolveRateInput(ratesByCode);
-    if (rateInput === null) return null;
-    return (this.valuationHandler as HasCurrencyExposure<number>).currentValue(
-      rateInput,
-    );
+    const rate = this.resolveRate(ratesByCode);
+    if (rate === null) return null;
+    return this.valuationHandler.currentValue(rate);
   }
 
   profitAmount(ratesByCode: Map<string, CurrencyRateItemModel>): number | null {
-    if (this.isManual) {
-      return (this.valuationHandler as ManualValuationModel).profitAmount;
-    }
-    const rateInput = this.resolveRateInput(ratesByCode);
-    if (rateInput === null) return null;
-    return (this.valuationHandler as HasCurrencyExposure<number>).profitAmount(
-      rateInput,
-    );
+    const rate = this.resolveRate(ratesByCode);
+    if (rate === null) return null;
+    return this.valuationHandler.profitAmount(rate);
   }
 
   profitPercentage(
     ratesByCode: Map<string, CurrencyRateItemModel>,
   ): number | null {
-    if (this.isManual) return null;
-    const rateInput = this.resolveRateInput(ratesByCode);
-    if (rateInput === null) return null;
-    return (
-      this.valuationHandler as HasCurrencyExposure<number>
-    ).profitPercentage(rateInput);
+    const rate = this.resolveRate(ratesByCode);
+    if (rate === null) return null;
+    return this.valuationHandler.profitPercentage(rate);
   }
 
   isProfit(ratesByCode: Map<string, CurrencyRateItemModel>): boolean | null {
-    if (this.isManual) {
-      return (this.valuationHandler as ManualValuationModel).isProfit;
-    }
-    const rateInput = this.resolveRateInput(ratesByCode);
-    if (rateInput === null) return null;
-    return (this.valuationHandler as HasCurrencyExposure<number>).isProfit(
-      rateInput,
-    );
+    const rate = this.resolveRate(ratesByCode);
+    if (rate === null) return null;
+    return this.valuationHandler.isProfit(rate);
   }
 
   formatCurrentValue(ratesByCode: Map<string, CurrencyRateItemModel>): string {
@@ -130,11 +92,7 @@ export class AssetItemModel extends AssetModel {
     assetItem.acquisitionDate = asset.acquisitionDate;
     assetItem.location = asset.location;
     assetItem.notes = asset.notes;
-    assetItem.valuationMode = asset.valuationMode;
-    assetItem.currencyCode = asset.currencyCode;
-    assetItem.foreignAmount = asset.foreignAmount;
-    assetItem.latestManualValue = asset.latestManualValue;
-    assetItem.manualValueUpdatedAt = asset.manualValueUpdatedAt;
+    assetItem.quantity = asset.quantity;
     assetItem.createdAt = asset.createdAt;
     assetItem.updatedAt = asset.updatedAt;
 

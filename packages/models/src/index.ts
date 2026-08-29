@@ -30,14 +30,12 @@ export { NetWorthModel } from "./overview/netWorthModel";
 export { CashFlowModel } from "./overview/cashFlowModel";
 export { MonthlyTrendItemModel } from "./overview/monthlyTrendItemModel";
 export { CategoryBreakdownItemModel } from "./overview/categoryBreakdownItemModel";
-export { ValuationMode } from "./shared/valuationMode";
 export type { HasCurrencyExposure } from "./shared/hasCurrencyExposure";
 export { CurrencyExposedModel } from "./shared/currencyExposedModel";
-export { ManualValuationModel } from "./shared/manualValuationModel";
-export { createValuationHandler } from "./shared/valuationHandlerFactory";
-export type {
-  ValuationHandler,
-  ValuationHandlerInput,
-} from "./shared/valuationHandlerFactory";
+export {
+  RATE_CODE_USD,
+  RATE_CODE_GOLD_18K,
+  rateCodeForCategory,
+} from "./shared/rateCode";
 export { CurrencyRateModel } from "./currencyRate/currencyRateModel";
 export { UpdateCurrencyRateRequestModel } from "./currencyRate/updateCurrencyRateRequestModel";

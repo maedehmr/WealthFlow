@@ -3,7 +3,6 @@
 import { useMemo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/shared/components/Button";
-import { Badge } from "@/shared/components/Badge";
 import { useCurrencyRates } from "@/features/currencyRates/hooks/useCurrencyRates";
 import { useInvestments } from "@/features/investments/hooks/useInvestments";
 import { useInvestmentStore } from "@/features/investments/model/investmentStore";
@@ -38,26 +37,14 @@ export function useInvestmentTable() {
         cell: (row: InvestmentItemModel) => row.formatPrice,
       },
       {
-        key: "priceUsd",
-        header: "قیمت (دلار)",
-        cell: (row: InvestmentItemModel) =>
-          row.formatPriceUsd(ratesByCode.get("USD")?.rate),
-      },
-      {
         key: "quantity",
-        header: "تعداد",
-        cell: (row: InvestmentItemModel) =>
-          row.isCurrencyExposed ? row.formatForeignAmount : row.formatQuantity,
+        header: "مقدار",
+        cell: (row: InvestmentItemModel) => row.formatQuantity,
       },
       {
         key: "currentValue",
         header: "ارزش فعلی",
-        cell: (row: InvestmentItemModel) => (
-          <div className="flex items-center gap-2">
-            <span>{row.formatCurrentValue(ratesByCode)}</span>
-            {row.isManual && <Badge variant="outline">دستی</Badge>}
-          </div>
-        ),
+        cell: (row: InvestmentItemModel) => row.formatCurrentValue(ratesByCode),
       },
       {
         key: "profitAmount",

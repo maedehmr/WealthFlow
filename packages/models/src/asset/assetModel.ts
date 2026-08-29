@@ -1,8 +1,4 @@
-import { ValuationMode } from "../shared/valuationMode";
-import {
-  createValuationHandler,
-  ValuationHandler,
-} from "../shared/valuationHandlerFactory";
+import { CurrencyExposedModel } from "../shared/currencyExposedModel";
 import { AssetCategory } from "./assetCategory";
 
 export class AssetModel {
@@ -15,18 +11,9 @@ export class AssetModel {
   createdAt!: string;
   updatedAt!: string;
   notes?: string;
-  valuationMode!: ValuationMode;
-  currencyCode?: string;
-  foreignAmount?: number;
-  latestManualValue?: number;
-  manualValueUpdatedAt?: number;
+  quantity?: number;
 
-  get valuationHandler(): ValuationHandler {
-    return createValuationHandler({
-      valuationMode: this.valuationMode,
-      purchasePrice: this.value,
-      foreignAmount: this.foreignAmount,
-      latestManualValue: this.latestManualValue,
-    });
+  get valuationHandler(): CurrencyExposedModel {
+    return new CurrencyExposedModel(this.value, this.quantity ?? 0);
   }
 }

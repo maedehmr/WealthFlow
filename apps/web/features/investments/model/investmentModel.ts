@@ -1,13 +1,7 @@
-import {
-  HasCurrencyExposure,
-  InvestmentModel,
-  ManualValuationModel,
-  ValuationMode,
-} from "@repo/models";
+import { InvestmentModel, rateCodeForCategory } from "@repo/models";
 import {
   formatJalaliDate,
   formatToman,
-  formatUsd,
   getNumberFormatter,
 } from "@/shared/lib/format";
 import {
@@ -25,16 +19,6 @@ export class InvestmentItemModel extends InvestmentModel {
     return getNumberFormatter().format(this.quantity);
   }
 
-  get formatForeignAmount(): string {
-    return this.foreignAmount === undefined
-      ? "—"
-      : getNumberFormatter().format(this.foreignAmount);
-  }
-
-  get isCurrencyExposed(): boolean {
-    return this.valuationMode === ValuationMode.CurrencyExposed;
-  }
-
   get formatPurchaseDate(): string {
     return formatJalaliDate(this.purchaseDate);
   }
@@ -47,71 +31,38 @@ export class InvestmentItemModel extends InvestmentModel {
     return this.recurrenceRule ? RecurrenceRuleLabel[this.recurrenceRule] : "—";
   }
 
-  formatPriceUsd(tomanPerUsdRate?: number): string {
-    return tomanPerUsdRate ? formatUsd(this.price / tomanPerUsdRate) : "—";
-  }
-
-  get isManual(): boolean {
-    return this.valuationMode === ValuationMode.Manual;
-  }
-
-  private resolveRateInput(
+  private resolveRate(
     ratesByCode: Map<string, CurrencyRateItemModel>,
   ): number | null {
-    if (this.valuationMode === ValuationMode.CurrencyExposed) {
-      const rate = this.currencyCode
-        ? ratesByCode.get(this.currencyCode)?.rate
-        : undefined;
-      if (rate === undefined || this.foreignAmount === undefined) {
-        return null;
-      }
-      return rate;
-    }
-    return null;
+    const code = rateCodeForCategory(this.category);
+    const rate = code ? ratesByCode.get(code)?.rate : undefined;
+    return rate === undefined ? null : rate;
   }
 
   currentValue(ratesByCode: Map<string, CurrencyRateItemModel>): number | null {
-    if (this.isManual) {
-      return (this.valuationHandler as ManualValuationModel).currentValue;
-    }
-    const rateInput = this.resolveRateInput(ratesByCode);
-    if (rateInput === null) return null;
-    return (this.valuationHandler as HasCurrencyExposure<number>).currentValue(
-      rateInput,
-    );
+    const rate = this.resolveRate(ratesByCode);
+    if (rate === null) return null;
+    return this.valuationHandler.currentValue(rate);
   }
 
   profitAmount(ratesByCode: Map<string, CurrencyRateItemModel>): number | null {
-    if (this.isManual) {
-      return (this.valuationHandler as ManualValuationModel).profitAmount;
-    }
-    const rateInput = this.resolveRateInput(ratesByCode);
-    if (rateInput === null) return null;
-    return (this.valuationHandler as HasCurrencyExposure<number>).profitAmount(
-      rateInput,
-    );
+    const rate = this.resolveRate(ratesByCode);
+    if (rate === null) return null;
+    return this.valuationHandler.profitAmount(rate);
   }
 
   profitPercentage(
     ratesByCode: Map<string, CurrencyRateItemModel>,
   ): number | null {
-    if (this.isManual) return null;
-    const rateInput = this.resolveRateInput(ratesByCode);
-    if (rateInput === null) return null;
-    return (
-      this.valuationHandler as HasCurrencyExposure<number>
-    ).profitPercentage(rateInput);
+    const rate = this.resolveRate(ratesByCode);
+    if (rate === null) return null;
+    return this.valuationHandler.profitPercentage(rate);
   }
 
   isProfit(ratesByCode: Map<string, CurrencyRateItemModel>): boolean | null {
-    if (this.isManual) {
-      return (this.valuationHandler as ManualValuationModel).isProfit;
-    }
-    const rateInput = this.resolveRateInput(ratesByCode);
-    if (rateInput === null) return null;
-    return (this.valuationHandler as HasCurrencyExposure<number>).isProfit(
-      rateInput,
-    );
+    const rate = this.resolveRate(ratesByCode);
+    if (rate === null) return null;
+    return this.valuationHandler.isProfit(rate);
   }
 
   formatCurrentValue(ratesByCode: Map<string, CurrencyRateItemModel>): string {
@@ -143,12 +94,7 @@ export class InvestmentItemModel extends InvestmentModel {
     investmentItem.isRecurring = investment.isRecurring;
     investmentItem.recurrenceRule = investment.recurrenceRule;
     investmentItem.notes = investment.notes;
-    investmentItem.valuationMode = investment.valuationMode;
     investmentItem.quantity = investment.quantity;
-    investmentItem.currencyCode = investment.currencyCode;
-    investmentItem.foreignAmount = investment.foreignAmount;
-    investmentItem.latestManualValue = investment.latestManualValue;
-    investmentItem.manualValueUpdatedAt = investment.manualValueUpdatedAt;
     investmentItem.createdAt = investment.createdAt;
     investmentItem.updatedAt = investment.updatedAt;
 

@@ -1,7 +1,7 @@
 import { classValidatorResolver } from "@hookform/resolvers/class-validator";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { CreateAssetRequestModel, ValuationMode } from "@repo/models";
+import { AssetCategory, CreateAssetRequestModel } from "@repo/models";
 import { useCreateAsset } from "@/features/assets/hooks/useCreateAsset";
 import { useUpdateAsset } from "@/features/assets/hooks/useUpdateAsset";
 import { useAssetStore } from "@/features/assets/model/assetStore";
@@ -14,6 +14,16 @@ interface UseAssetFormOptions {
   mode: AssetFormMode;
   initialValues: AssetItemModel | null;
 }
+
+const EMPTY_FORM: Partial<CreateAssetRequestModel> = {
+  name: "",
+  category: undefined,
+  value: undefined,
+  acquisitionDate: undefined,
+  location: "",
+  notes: "",
+  quantity: undefined,
+};
 
 export function useAssetForm({ mode, initialValues }: UseAssetFormOptions) {
   const isFormDialogOpen = useAssetStore((state) => state.isFormDialogOpen);
@@ -35,7 +45,6 @@ export function useAssetForm({ mode, initialValues }: UseAssetFormOptions) {
     handleSubmit,
     reset,
     trigger,
-    setValue,
     formState: { errors, isValid },
   } = useForm<CreateAssetRequestModel>({
     resolver,
@@ -43,7 +52,7 @@ export function useAssetForm({ mode, initialValues }: UseAssetFormOptions) {
     reValidateMode: "onBlur",
   });
 
-  const valuationMode = useWatch({ control, name: "valuationMode" });
+  const category = useWatch({ control, name: "category" });
 
   useEffect(() => {
     if (!isFormDialogOpen) return;
@@ -56,54 +65,22 @@ export function useAssetForm({ mode, initialValues }: UseAssetFormOptions) {
         acquisitionDate: initialValues.acquisitionDate,
         location: initialValues.location,
         notes: initialValues.notes,
-        valuationMode: initialValues.valuationMode,
-        currencyCode: initialValues.currencyCode,
-        foreignAmount: initialValues.foreignAmount,
-        latestManualValue: initialValues.latestManualValue,
+        quantity: initialValues.quantity,
       });
       void trigger();
     } else {
-      reset({
-        name: "",
-        category: undefined,
-        value: undefined,
-        acquisitionDate: undefined,
-        location: "",
-        notes: "",
-        valuationMode: ValuationMode.Manual,
-        currencyCode: "",
-        foreignAmount: undefined,
-        latestManualValue: undefined,
-      });
+      reset(EMPTY_FORM);
     }
   }, [isFormDialogOpen, mode, initialValues, reset, trigger]);
 
-  const handleValuationModeChange = (newValuationMode: ValuationMode) => {
-    setValue("valuationMode", newValuationMode);
-
-    const clearedFields: Array<keyof CreateAssetRequestModel> = [];
-    if (newValuationMode !== ValuationMode.CurrencyExposed) {
-      setValue("foreignAmount", undefined);
-      clearedFields.push("foreignAmount");
-    }
-    if (newValuationMode !== ValuationMode.Manual) {
-      setValue("latestManualValue", undefined);
-      clearedFields.push("latestManualValue");
-    }
-    if (newValuationMode === ValuationMode.Manual) {
-      setValue("currencyCode", undefined);
-      clearedFields.push("currencyCode");
-    }
-
-    // Only re-validate fields we just cleared, so their stale errors
-    // disappear. Fields that just became required stay untouched until
-    // the user actually interacts with them (mode: "onBlur").
-    if (clearedFields.length > 0) {
-      void trigger(clearedFields);
-    }
-  };
-
   const onSubmit = handleSubmit((data) => {
+    const isDynamic =
+      data.category === AssetCategory.Gold ||
+      data.category === AssetCategory.Dollar;
+    if (!isDynamic) {
+      data.quantity = undefined;
+    }
+
     if (mode === "edit" && initialValues) {
       updateAsset(
         { id: initialValues.id, data },
@@ -112,18 +89,7 @@ export function useAssetForm({ mode, initialValues }: UseAssetFormOptions) {
     } else {
       createAsset(data, {
         onSuccess: () => {
-          reset({
-            name: "",
-            category: undefined,
-            value: undefined,
-            acquisitionDate: undefined,
-            location: "",
-            notes: "",
-            valuationMode: ValuationMode.Manual,
-            currencyCode: "",
-            foreignAmount: undefined,
-            latestManualValue: undefined,
-          });
+          reset(EMPTY_FORM);
           closeFormDialog();
         },
       });
@@ -135,8 +101,7 @@ export function useAssetForm({ mode, initialValues }: UseAssetFormOptions) {
     control,
     errors,
     isValid,
-    valuationMode,
-    handleValuationModeChange,
+    category,
     onSubmit,
     isPending: mode === "edit" ? isUpdating : isCreating,
     errorMessage: mode === "edit" ? updateErrorMessage : createErrorMessage,

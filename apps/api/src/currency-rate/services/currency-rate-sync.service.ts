@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { RATE_CODE_GOLD_18K, RATE_CODE_USD } from '@repo/models';
 import { CurrencyRateRepository } from '../currency-rate.repository';
 
-interface BrsApiCurrency {
+interface BrsApiQuote {
   symbol: string;
   name_en?: string;
   price: number;
@@ -10,12 +11,23 @@ interface BrsApiCurrency {
 }
 
 interface BrsApiResponse {
-  gold?: unknown[];
-  currency?: BrsApiCurrency[];
+  gold?: BrsApiQuote[];
+  currency?: BrsApiQuote[];
   cryptocurrency?: unknown[];
 }
 
-const SYNCED_CODES = ['USD', 'EUR'] as const;
+type BrsApiSection = 'gold' | 'currency';
+
+interface SyncedRate {
+  code: string;
+  section: BrsApiSection;
+  symbol: string;
+}
+
+const SYNCED_RATES: SyncedRate[] = [
+  { code: RATE_CODE_USD, section: 'currency', symbol: 'USD' },
+  { code: RATE_CODE_GOLD_18K, section: 'gold', symbol: 'IR_GOLD_18K' },
+];
 const RIAL_PER_TOMAN = 10;
 const SOURCE = 'brsapi.ir';
 const BRSAPI_URL = 'https://Api.BrsApi.ir/Market/Gold_Currency.php';
@@ -31,23 +43,34 @@ export class CurrencyRateSyncService {
   ) {}
 
   async syncAll(): Promise<void> {
-    for (const code of SYNCED_CODES) {
+    let data: BrsApiResponse;
+    try {
+      data = await this.fetchMarket();
+    } catch (error) {
+      this.logger.error(
+        'Failed to fetch brsapi.ir market data, keeping last known values',
+        error instanceof Error ? error.stack : String(error),
+      );
+      return;
+    }
+
+    for (const rate of SYNCED_RATES) {
       try {
-        const rate = await this.fetchTomanRate(code);
-        await this.currencyRateRepository.upsert(code, {
-          rate,
+        const toman = this.extractTomanRate(data, rate);
+        await this.currencyRateRepository.upsert(rate.code, {
+          rate: toman,
           source: SOURCE,
         });
       } catch (error) {
         this.logger.error(
-          `Failed to sync currency rate for ${code}, keeping last known value`,
+          `Failed to sync rate for ${rate.code}, keeping last known value`,
           error instanceof Error ? error.stack : String(error),
         );
       }
     }
   }
 
-  private async fetchTomanRate(code: string): Promise<number> {
+  private async fetchMarket(): Promise<BrsApiResponse> {
     // Free tier requires a (free) key; a paid/Pro tier would only swap the URL/params below.
     const key = this.configService.get<string>('BRSAPI_KEY');
     if (!key) {
@@ -70,20 +93,26 @@ export class CurrencyRateSyncService {
       throw new Error(`brsapi.ir responded with ${response.status}`);
     }
 
-    const data = (await response.json()) as BrsApiResponse;
-    if (!Array.isArray(data.currency)) {
-      throw new Error('brsapi.ir response missing currency array');
+    return (await response.json()) as BrsApiResponse;
+  }
+
+  private extractTomanRate(data: BrsApiResponse, rate: SyncedRate): number {
+    const section = data[rate.section];
+    if (!Array.isArray(section)) {
+      throw new Error(`brsapi.ir response missing ${rate.section} array`);
     }
 
-    const entry = data.currency.find(
-      (item) => item.symbol?.toUpperCase() === code,
+    const entry = section.find(
+      (item) => item.symbol?.toUpperCase() === rate.symbol.toUpperCase(),
     );
     if (!entry) {
-      throw new Error(`brsapi.ir response missing ${code} entry`);
+      throw new Error(`brsapi.ir response missing ${rate.symbol} entry`);
     }
 
     if (typeof entry.price !== 'number' || !Number.isFinite(entry.price)) {
-      throw new Error(`brsapi.ir returned a non-numeric price for ${code}`);
+      throw new Error(
+        `brsapi.ir returned a non-numeric price for ${rate.symbol}`,
+      );
     }
 
     const unit = entry.unit ?? '';
@@ -94,14 +123,14 @@ export class CurrencyRateSyncService {
       toman = entry.price;
     } else {
       throw new Error(
-        `brsapi.ir returned unexpected unit "${entry.unit}" for ${code}`,
+        `brsapi.ir returned unexpected unit "${entry.unit}" for ${rate.symbol}`,
       );
     }
 
     // Temporary: log every sync so the rate can be sanity-checked against a
     // free-market reference (tgju.org). Dial back to logger.debug once verified.
     this.logger.log(
-      `brsapi.ir ${code}: ${toman} Toman (raw ${entry.price} ${entry.unit})`,
+      `brsapi.ir ${rate.code}: ${toman} Toman (raw ${entry.price} ${entry.unit})`,
     );
 
     return toman;

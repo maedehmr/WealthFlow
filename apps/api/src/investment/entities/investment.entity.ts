@@ -1,8 +1,4 @@
-import {
-  InvestmentCategory,
-  RecurrenceRule,
-  ValuationMode,
-} from '@repo/models';
+import { InvestmentCategory, RecurrenceRule } from '@repo/models';
 import {
   Column,
   CreateDateColumn,
@@ -23,7 +19,7 @@ export class Investment {
   @Column({
     type: 'enum',
     enum: InvestmentCategory,
-    default: InvestmentCategory.Other,
+    default: InvestmentCategory.Gold,
   })
   category: InvestmentCategory;
 
@@ -49,41 +45,12 @@ export class Investment {
   notes: string | null;
 
   @Column({
-    type: 'enum',
-    enum: ValuationMode,
-    default: ValuationMode.Manual,
-  })
-  valuationMode: ValuationMode;
-
-  @Column({
     type: 'decimal',
     precision: 18,
     scale: 8,
     transformer: numberTransformer,
   })
   quantity: number;
-
-  @Column({ type: 'varchar', length: 32, nullable: true })
-  currencyCode: string | null;
-
-  @Column({
-    type: 'decimal',
-    precision: 18,
-    scale: 8,
-    nullable: true,
-    transformer: numberTransformer,
-  })
-  foreignAmount: number | null;
-
-  @Column({
-    type: 'bigint',
-    nullable: true,
-    transformer: numberTransformer,
-  })
-  latestManualValue: number | null;
-
-  @Column({ type: 'timestamptz', nullable: true })
-  manualValueUpdatedAt: Date | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;

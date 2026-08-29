@@ -1,7 +1,7 @@
 import { classValidatorResolver } from "@hookform/resolvers/class-validator";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { CreateInvestmentRequestModel, ValuationMode } from "@repo/models";
+import { CreateInvestmentRequestModel } from "@repo/models";
 import { useCreateInvestment } from "@/features/investments/hooks/useCreateInvestment";
 import { useUpdateInvestment } from "@/features/investments/hooks/useUpdateInvestment";
 import { useInvestmentStore } from "@/features/investments/model/investmentStore";
@@ -14,6 +14,18 @@ interface UseInvestmentFormOptions {
   mode: InvestmentFormMode;
   initialValues: InvestmentItemModel | null;
 }
+
+const EMPTY_FORM: Partial<CreateInvestmentRequestModel> = {
+  name: "",
+  category: undefined,
+  price: undefined,
+  purchaseDate: undefined,
+  broker: "",
+  isRecurring: false,
+  recurrenceRule: undefined,
+  notes: "",
+  quantity: undefined,
+};
 
 export function useInvestmentForm({
   mode,
@@ -49,7 +61,7 @@ export function useInvestmentForm({
   });
 
   const isRecurring = useWatch({ control, name: "isRecurring" });
-  const valuationMode = useWatch({ control, name: "valuationMode" });
+  const category = useWatch({ control, name: "category" });
 
   useEffect(() => {
     if (!isFormDialogOpen) return;
@@ -64,29 +76,11 @@ export function useInvestmentForm({
         isRecurring: initialValues.isRecurring,
         recurrenceRule: initialValues.recurrenceRule,
         notes: initialValues.notes,
-        valuationMode: initialValues.valuationMode,
         quantity: initialValues.quantity,
-        currencyCode: initialValues.currencyCode,
-        foreignAmount: initialValues.foreignAmount,
-        latestManualValue: initialValues.latestManualValue,
       });
       void trigger();
     } else {
-      reset({
-        name: "",
-        category: undefined,
-        price: undefined,
-        purchaseDate: undefined,
-        broker: "",
-        isRecurring: false,
-        recurrenceRule: undefined,
-        notes: "",
-        valuationMode: ValuationMode.Manual,
-        quantity: undefined,
-        currencyCode: "",
-        foreignAmount: undefined,
-        latestManualValue: undefined,
-      });
+      reset(EMPTY_FORM);
     }
   }, [isFormDialogOpen, mode, initialValues, reset, trigger]);
 
@@ -95,37 +89,6 @@ export function useInvestmentForm({
     if (!checked) {
       setValue("recurrenceRule", undefined);
       void trigger("recurrenceRule");
-    }
-  };
-
-  const handleValuationModeChange = (newValuationMode: ValuationMode) => {
-    setValue("valuationMode", newValuationMode);
-
-    const clearedFields: Array<keyof CreateInvestmentRequestModel> = [];
-    if (newValuationMode !== ValuationMode.CurrencyExposed) {
-      setValue("foreignAmount", undefined);
-      clearedFields.push("foreignAmount");
-    } else {
-      // quantity isn't a meaningful multiplier for a currency position
-      // (foreignAmount is) — the field is hidden for this mode, so keep
-      // it satisfying validation with a neutral default.
-      setValue("quantity", 1);
-      clearedFields.push("quantity");
-    }
-    if (newValuationMode !== ValuationMode.Manual) {
-      setValue("latestManualValue", undefined);
-      clearedFields.push("latestManualValue");
-    }
-    if (newValuationMode === ValuationMode.Manual) {
-      setValue("currencyCode", undefined);
-      clearedFields.push("currencyCode");
-    }
-
-    // Only re-validate fields we just cleared, so their stale errors
-    // disappear. Fields that just became required stay untouched until
-    // the user actually interacts with them (mode: "onBlur").
-    if (clearedFields.length > 0) {
-      void trigger(clearedFields);
     }
   };
 
@@ -138,21 +101,7 @@ export function useInvestmentForm({
     } else {
       createInvestment(data, {
         onSuccess: () => {
-          reset({
-            name: "",
-            category: undefined,
-            price: undefined,
-            purchaseDate: undefined,
-            broker: "",
-            isRecurring: false,
-            recurrenceRule: undefined,
-            notes: "",
-            valuationMode: ValuationMode.Manual,
-            quantity: undefined,
-            currencyCode: "",
-            foreignAmount: undefined,
-            latestManualValue: undefined,
-          });
+          reset(EMPTY_FORM);
           closeFormDialog();
         },
       });
@@ -165,9 +114,8 @@ export function useInvestmentForm({
     errors,
     isValid,
     isRecurring,
+    category,
     handleRecurringChange,
-    valuationMode,
-    handleValuationModeChange,
     onSubmit,
     isPending: mode === "edit" ? isUpdating : isCreating,
     errorMessage: mode === "edit" ? updateErrorMessage : createErrorMessage,

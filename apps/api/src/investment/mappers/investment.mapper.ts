@@ -15,12 +15,7 @@ export class InvestmentMapper {
       isRecurring: entity.isRecurring,
       recurrenceRule: entity.recurrenceRule ?? undefined,
       notes: entity.notes ?? undefined,
-      valuationMode: entity.valuationMode,
       quantity: entity.quantity,
-      currencyCode: entity.currencyCode ?? undefined,
-      foreignAmount: entity.foreignAmount ?? undefined,
-      latestManualValue: entity.latestManualValue ?? undefined,
-      manualValueUpdatedAt: entity.manualValueUpdatedAt?.getTime() ?? undefined,
       createdAt: entity.createdAt.toISOString(),
       updatedAt: entity.updatedAt.toISOString(),
     });
@@ -33,26 +28,12 @@ export class InvestmentMapper {
       broker: dto.broker ?? null,
       recurrenceRule: dto.isRecurring ? (dto.recurrenceRule ?? null) : null,
       notes: dto.notes ?? null,
-      currencyCode: dto.currencyCode ?? null,
-      foreignAmount: dto.foreignAmount ?? null,
-      latestManualValue: dto.latestManualValue ?? null,
-      manualValueUpdatedAt:
-        dto.latestManualValue !== undefined ? new Date() : null,
     };
   }
 
   static toUpdateEntity(dto: UpdateInvestmentDto): Partial<Investment> {
-    const {
-      purchaseDate,
-      isRecurring,
-      recurrenceRule,
-      notes,
-      broker,
-      currencyCode,
-      foreignAmount,
-      latestManualValue,
-      ...rest
-    } = dto;
+    const { purchaseDate, isRecurring, recurrenceRule, notes, broker, ...rest } =
+      dto;
     const entity: Partial<Investment> = rest;
 
     if (purchaseDate !== undefined) {
@@ -69,16 +50,6 @@ export class InvestmentMapper {
       entity.recurrenceRule = isRecurring ? (recurrenceRule ?? null) : null;
     } else if (recurrenceRule !== undefined) {
       entity.recurrenceRule = recurrenceRule;
-    }
-    if (currencyCode !== undefined) {
-      entity.currencyCode = currencyCode ?? null;
-    }
-    if (foreignAmount !== undefined) {
-      entity.foreignAmount = foreignAmount;
-    }
-    if (latestManualValue !== undefined) {
-      entity.latestManualValue = latestManualValue;
-      entity.manualValueUpdatedAt = new Date();
     }
 
     return entity;

@@ -13,11 +13,7 @@ export class AssetMapper {
       acquisitionDate: entity.acquisitionDate?.getTime() ?? undefined,
       location: entity.location ?? undefined,
       notes: entity.notes ?? undefined,
-      valuationMode: entity.valuationMode,
-      currencyCode: entity.currencyCode ?? undefined,
-      foreignAmount: entity.foreignAmount ?? undefined,
-      latestManualValue: entity.latestManualValue ?? undefined,
-      manualValueUpdatedAt: entity.manualValueUpdatedAt?.getTime() ?? undefined,
+      quantity: entity.quantity ?? undefined,
       createdAt: entity.createdAt.toISOString(),
       updatedAt: entity.updatedAt.toISOString(),
     });
@@ -31,24 +27,12 @@ export class AssetMapper {
         : null,
       location: dto.location ?? null,
       notes: dto.notes ?? null,
-      currencyCode: dto.currencyCode ?? null,
-      foreignAmount: dto.foreignAmount ?? null,
-      latestManualValue: dto.latestManualValue ?? null,
-      manualValueUpdatedAt:
-        dto.latestManualValue !== undefined ? new Date() : null,
+      quantity: dto.quantity ?? null,
     };
   }
 
   static toUpdateEntity(dto: UpdateAssetDto): Partial<Asset> {
-    const {
-      acquisitionDate,
-      location,
-      notes,
-      currencyCode,
-      foreignAmount,
-      latestManualValue,
-      ...rest
-    } = dto;
+    const { acquisitionDate, location, notes, quantity, ...rest } = dto;
     const entity: Partial<Asset> = rest;
 
     if (acquisitionDate !== undefined) {
@@ -62,15 +46,8 @@ export class AssetMapper {
     if (notes !== undefined) {
       entity.notes = notes ?? null;
     }
-    if (currencyCode !== undefined) {
-      entity.currencyCode = currencyCode ?? null;
-    }
-    if (foreignAmount !== undefined) {
-      entity.foreignAmount = foreignAmount;
-    }
-    if (latestManualValue !== undefined) {
-      entity.latestManualValue = latestManualValue;
-      entity.manualValueUpdatedAt = new Date();
+    if (quantity !== undefined) {
+      entity.quantity = quantity ?? null;
     }
 
     return entity;

@@ -1,13 +1,8 @@
-import { InvestmentCategory, RecurrenceRule, ValuationMode } from "@repo/models";
+import { InvestmentCategory, RecurrenceRule } from "@repo/models";
 
 export const InvestmentCategoryLabel: Record<InvestmentCategory, string> = {
-  [InvestmentCategory.Stocks]: "سهام",
-  [InvestmentCategory.Crypto]: "ارز دیجیتال",
-  [InvestmentCategory.RealEstate]: "املاک",
   [InvestmentCategory.Gold]: "طلا",
-  [InvestmentCategory.Fund]: "صندوق",
-  [InvestmentCategory.Bond]: "اوراق قرضه",
-  [InvestmentCategory.Other]: "سایر",
+  [InvestmentCategory.Dollar]: "دلار",
 };
 
 export const RecurrenceRuleLabel: Record<RecurrenceRule, string> = {
@@ -15,11 +10,6 @@ export const RecurrenceRuleLabel: Record<RecurrenceRule, string> = {
   [RecurrenceRule.Weekly]: "هفتگی",
   [RecurrenceRule.Monthly]: "ماهانه",
   [RecurrenceRule.Yearly]: "سالانه",
-};
-
-export const ValuationModeLabel: Record<ValuationMode, string> = {
-  [ValuationMode.CurrencyExposed]: "پول نقد ارزی",
-  [ValuationMode.Manual]: "دستی",
 };
 
 export enum InvestmentQueryKey {

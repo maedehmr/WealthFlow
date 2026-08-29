@@ -1,4 +1,4 @@
-import { AssetCategory, ValuationMode } from '@repo/models';
+import { AssetCategory } from '@repo/models';
 import {
   Column,
   CreateDateColumn,
@@ -39,33 +39,13 @@ export class Asset {
   notes: string | null;
 
   @Column({
-    type: 'enum',
-    enum: ValuationMode,
-    default: ValuationMode.Manual,
-  })
-  valuationMode: ValuationMode;
-
-  @Column({ type: 'varchar', length: 32, nullable: true })
-  currencyCode: string | null;
-
-  @Column({
     type: 'decimal',
     precision: 18,
     scale: 8,
     nullable: true,
     transformer: numberTransformer,
   })
-  foreignAmount: number | null;
-
-  @Column({
-    type: 'bigint',
-    nullable: true,
-    transformer: numberTransformer,
-  })
-  latestManualValue: number | null;
-
-  @Column({ type: 'timestamptz', nullable: true })
-  manualValueUpdatedAt: Date | null;
+  quantity: number | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
