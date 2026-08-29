@@ -1,17 +1,17 @@
 import {
+  BanknoteArrowUp,
   BarChart3,
   CircleArrowRight,
   CreditCard,
   HandCoins,
   LayoutDashboard,
   PiggyBank,
-  WalletCards,
 } from "lucide-react";
 import { Routes } from "@/shared/constants/routes";
 
 export const mainNavItems = [
   { title: "نمای کلی", href: Routes.Root, icon: LayoutDashboard },
-  { title: "درآمد", href: Routes.Incomes, icon: WalletCards },
+  { title: "درآمد", href: Routes.Incomes, icon: BanknoteArrowUp },
   { title: "هزینه‌ها", href: Routes.Expenses, icon: CreditCard },
   { title: "سرمایه‌گذاری", href: Routes.Investments, icon: BarChart3 },
   { title: "دارایی‌ها", href: Routes.Assets, icon: PiggyBank },

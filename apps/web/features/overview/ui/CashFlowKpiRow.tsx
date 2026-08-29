@@ -1,10 +1,10 @@
 import type { CashFlowModel } from "@repo/models";
 import {
+  BanknoteArrowUp,
   CreditCard,
   Percent,
   TrendingDown,
   TrendingUp,
-  WalletCards,
 } from "lucide-react";
 import {
   Card,
@@ -23,7 +23,7 @@ export function CashFlowKpiRow({ cashFlow }: { cashFlow: CashFlowModel }) {
     {
       title: "درآمد این ماه",
       value: `${formatToman(cashFlow.monthIncome)} تومان`,
-      icon: WalletCards,
+      icon: BanknoteArrowUp,
       badge: null,
     },
     {
