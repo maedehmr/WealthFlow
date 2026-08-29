@@ -9,13 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/Card";
-import { Input } from "@/shared/components/Input";
-import { Label } from "@/shared/components/Label";
+import { FormTextField } from "@/shared/components/form";
 import { useLoginForm } from "@/features/auth/hooks/useLoginForm";
 
 export function LoginForm() {
-  const { register, errors, onSubmit, isPending, errorMessage } =
-    useLoginForm();
+  const { control, onSubmit, isPending, errorMessage } = useLoginForm();
 
   return (
     <Card className="w-full max-w-sm">
@@ -25,42 +23,24 @@ export function LoginForm() {
       </CardHeader>
       <CardContent>
         <form className="grid gap-5" onSubmit={onSubmit} noValidate>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email">ایمیل</Label>
-            <div className="relative">
-              <Mail className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="name@example.com"
-                className="pr-9 text-left"
-                {...register("email")}
-              />
-            </div>
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">رمز عبور</Label>
-            </div>
-            <div className="relative">
-              <LockKeyhole className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                className="pr-9 text-left"
-                {...register("password")}
-              />
-            </div>
-            {errors.password && (
-              <p className="text-sm text-destructive">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
+          <FormTextField
+            control={control}
+            name="email"
+            label="ایمیل"
+            type="email"
+            placeholder="name@example.com"
+            startIcon={<Mail className="size-4" />}
+            inputClassName="text-left"
+          />
+          <FormTextField
+            control={control}
+            name="password"
+            label="رمز عبور"
+            type="password"
+            placeholder="••••••••"
+            startIcon={<LockKeyhole className="size-4" />}
+            inputClassName="text-left"
+          />
           {errorMessage && (
             <p className="text-sm text-destructive">{errorMessage}</p>
           )}

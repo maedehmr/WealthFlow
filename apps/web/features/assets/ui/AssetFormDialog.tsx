@@ -1,10 +1,8 @@
 "use client";
 
 import { X } from "lucide-react";
-import { Controller } from "react-hook-form";
 import { AssetCategory } from "@repo/models";
 import { Button } from "@/shared/components/Button";
-import { DatePicker } from "@/shared/components/DatePicker";
 import {
   Dialog,
   DialogClose,
@@ -14,18 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/components/Dialog";
-import { Input } from "@/shared/components/Input";
-import { Label } from "@/shared/components/Label";
-import { NumberInput } from "@/shared/components/NumberInput";
-import { PriceInput } from "@/shared/components/PriceInput";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/components/Select";
-import { Textarea } from "@/shared/components/Textarea";
+  FormDateField,
+  FormNumberField,
+  FormPriceField,
+  FormSelectField,
+  FormTextField,
+  FormTextareaField,
+} from "@/shared/components/form";
 import { useAssetForm } from "@/features/assets/hooks/useAssetForm";
 import { AssetCategoryLabel } from "@/features/assets/model/assetConstant";
 import { useAssetStore } from "@/features/assets/model/assetStore";
@@ -50,18 +44,8 @@ export function AssetFormDialog() {
   const selectedAsset = useAssetStore((state) => state.selectedAsset);
   const closeFormDialog = useAssetStore((state) => state.closeFormDialog);
 
-  const {
-    register,
-    control,
-    errors,
-    isValid,
-    category,
-    onSubmit,
-    isPending,
-    errorMessage,
-  } = useAssetForm({ mode: formMode, initialValues: selectedAsset });
-
-  const showQuantity = isDynamicCategory(category);
+  const { control, isValid, category, onSubmit, isPending, errorMessage } =
+    useAssetForm({ mode: formMode, initialValues: selectedAsset });
 
   return (
     <Dialog
@@ -95,132 +79,42 @@ export function AssetFormDialog() {
           onSubmit={onSubmit}
           noValidate
         >
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="asset-name">نام</Label>
-            <Input id="asset-name" {...register("name")} />
-            {errors.name && (
-              <p className="text-destructive text-sm">{errors.name.message}</p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="asset-category">دسته‌بندی</Label>
-            <Controller
+          <FormTextField control={control} name="name" label="نام" />
+          <FormSelectField
+            control={control}
+            name="category"
+            label="دسته‌بندی"
+            items={AssetCategoryLabel}
+          />
+          <FormPriceField
+            control={control}
+            name="value"
+            label={valueLabel(category)}
+          />
+          {isDynamicCategory(category) && (
+            <FormNumberField
               control={control}
-              name="category"
-              render={({ field }) => (
-                <Select
-                  name={field.name}
-                  items={AssetCategoryLabel}
-                  value={field.value ?? null}
-                  onValueChange={(value) => field.onChange(value)}
-                  onOpenChange={(open) => {
-                    if (!open) field.onBlur();
-                  }}
-                  disabled={field.disabled}
-                >
-                  <SelectTrigger id="asset-category">
-                    <SelectValue placeholder="انتخاب کنید" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(AssetCategoryLabel).map(
-                      ([value, label]) => (
-                        <SelectItem key={value} value={value}>
-                          {label}
-                        </SelectItem>
-                      ),
-                    )}
-                  </SelectContent>
-                </Select>
-              )}
+              name="quantity"
+              label={quantityLabel(category)}
             />
-            {errors.category && (
-              <p className="text-destructive text-sm">
-                {errors.category.message}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="asset-value">{valueLabel(category)}</Label>
-            <Controller
-              control={control}
-              name="value"
-              render={({ field }) => (
-                <PriceInput
-                  id="asset-value"
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-            {errors.value && (
-              <p className="text-destructive text-sm">{errors.value.message}</p>
-            )}
-          </div>
-          {showQuantity && (
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="asset-quantity">{quantityLabel(category)}</Label>
-              <Controller
-                control={control}
-                name="quantity"
-                render={({ field }) => (
-                  <NumberInput
-                    id="asset-quantity"
-                    name={field.name}
-                    value={field.value}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    disabled={field.disabled}
-                  />
-                )}
-              />
-              {errors.quantity && (
-                <p className="text-destructive text-sm">
-                  {errors.quantity.message}
-                </p>
-              )}
-            </div>
           )}
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="asset-acquisition-date">تاریخ تملک</Label>
-            <Controller
-              control={control}
-              name="acquisitionDate"
-              render={({ field }) => (
-                <DatePicker
-                  id="asset-acquisition-date"
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onClose={field.onBlur}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-            {errors.acquisitionDate && (
-              <p className="text-destructive text-sm">
-                {errors.acquisitionDate.message}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2 sm:col-span-2">
-            <Label htmlFor="asset-location">محل نگهداری</Label>
-            <Input id="asset-location" {...register("location")} />
-            {errors.location && (
-              <p className="text-destructive text-sm">
-                {errors.location.message}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2 sm:col-span-2">
-            <Label htmlFor="asset-notes">یادداشت</Label>
-            <Textarea id="asset-notes" {...register("notes")} />
-            {errors.notes && (
-              <p className="text-destructive text-sm">{errors.notes.message}</p>
-            )}
-          </div>
+          <FormDateField
+            control={control}
+            name="acquisitionDate"
+            label="تاریخ تملک"
+          />
+          <FormTextField
+            control={control}
+            name="location"
+            label="محل نگهداری"
+            className="sm:col-span-2"
+          />
+          <FormTextareaField
+            control={control}
+            name="notes"
+            label="یادداشت"
+            className="sm:col-span-2"
+          />
           {errorMessage && (
             <p className="text-destructive text-sm sm:col-span-2">
               {errorMessage}

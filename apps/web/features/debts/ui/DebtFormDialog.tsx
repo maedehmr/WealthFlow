@@ -1,10 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { Controller } from "react-hook-form";
 import { Button } from "@/shared/components/Button";
-import { Checkbox } from "@/shared/components/Checkbox";
-import { DatePicker } from "@/shared/components/DatePicker";
 import {
   Dialog,
   DialogClose,
@@ -14,17 +11,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/components/Dialog";
-import { Input } from "@/shared/components/Input";
-import { Label } from "@/shared/components/Label";
-import { PriceInput } from "@/shared/components/PriceInput";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/components/Select";
-import { Textarea } from "@/shared/components/Textarea";
+  FormCheckboxField,
+  FormDateField,
+  FormPriceField,
+  FormSelectField,
+  FormTextField,
+  FormTextareaField,
+} from "@/shared/components/form";
 import { useDebtForm } from "@/features/debts/hooks/useDebtForm";
 import {
   DebtCategoryLabel,
@@ -39,9 +33,7 @@ export function DebtFormDialog() {
   const closeFormDialog = useDebtStore((state) => state.closeFormDialog);
 
   const {
-    register,
     control,
-    errors,
     isValid,
     isRecurring,
     handleRecurringChange,
@@ -82,172 +74,37 @@ export function DebtFormDialog() {
           onSubmit={onSubmit}
           noValidate
         >
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="debt-name">نام</Label>
-            <Input id="debt-name" {...register("name")} />
-            {errors.name && (
-              <p className="text-destructive text-sm">{errors.name.message}</p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="debt-price">مبلغ (تومان)</Label>
-            <Controller
-              control={control}
-              name="price"
-              render={({ field }) => (
-                <PriceInput
-                  id="debt-price"
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-            {errors.price && (
-              <p className="text-destructive text-sm">
-                {errors.price.message}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="debt-category">دسته‌بندی</Label>
-            <Controller
-              control={control}
-              name="category"
-              render={({ field }) => (
-                <Select
-                  name={field.name}
-                  items={DebtCategoryLabel}
-                  value={field.value ?? null}
-                  onValueChange={(value) => field.onChange(value)}
-                  onOpenChange={(open) => {
-                    if (!open) field.onBlur();
-                  }}
-                  disabled={field.disabled}
-                >
-                  <SelectTrigger id="debt-category">
-                    <SelectValue placeholder="انتخاب کنید" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(DebtCategoryLabel).map(
-                      ([value, label]) => (
-                        <SelectItem key={value} value={value}>
-                          {label}
-                        </SelectItem>
-                      )
-                    )}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.category && (
-              <p className="text-destructive text-sm">
-                {errors.category.message}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="debt-date">سررسید</Label>
-            <Controller
-              control={control}
-              name="date"
-              render={({ field }) => (
-                <DatePicker
-                  id="debt-date"
-                  name={field.name}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onClose={field.onBlur}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-            {errors.date && (
-              <p className="text-destructive text-sm">{errors.date.message}</p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="debt-creditor">طلبکار</Label>
-            <Input id="debt-creditor" {...register("creditor")} />
-            {errors.creditor && (
-              <p className="text-destructive text-sm">
-                {errors.creditor.message}
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <Controller
-              control={control}
-              name="isRecurring"
-              render={({ field }) => (
-                <Checkbox
-                  id="debt-is-recurring"
-                  checked={field.value ?? false}
-                  onCheckedChange={(checked) =>
-                    handleRecurringChange(checked)
-                  }
-                  onBlur={field.onBlur}
-                  disabled={field.disabled}
-                />
-              )}
-            />
-            <Label htmlFor="debt-is-recurring">بدهی تکرارشونده است</Label>
-            {errors.isRecurring && (
-              <p className="text-destructive text-sm">
-                {errors.isRecurring.message}
-              </p>
-            )}
-          </div>
+          <FormTextField control={control} name="name" label="نام" />
+          <FormPriceField control={control} name="price" label="مبلغ (تومان)" />
+          <FormSelectField
+            control={control}
+            name="category"
+            label="دسته‌بندی"
+            items={DebtCategoryLabel}
+          />
+          <FormDateField control={control} name="date" label="سررسید" />
+          <FormTextField control={control} name="creditor" label="طلبکار" />
+          <FormCheckboxField
+            control={control}
+            name="isRecurring"
+            label="بدهی تکرارشونده است"
+            onCheckedChange={handleRecurringChange}
+          />
           {isRecurring && (
-            <div className="flex flex-col gap-2 sm:col-span-2">
-              <Label htmlFor="debt-recurrence-rule">دوره تکرار</Label>
-              <Controller
-                control={control}
-                name="recurrenceRule"
-                render={({ field }) => (
-                  <Select
-                    name={field.name}
-                    items={RecurrenceRuleLabel}
-                    value={field.value ?? null}
-                    onValueChange={(value) => field.onChange(value)}
-                    onOpenChange={(open) => {
-                      if (!open) field.onBlur();
-                    }}
-                    disabled={field.disabled}
-                  >
-                    <SelectTrigger id="debt-recurrence-rule">
-                      <SelectValue placeholder="انتخاب کنید" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(RecurrenceRuleLabel).map(
-                        ([value, label]) => (
-                          <SelectItem key={value} value={value}>
-                            {label}
-                          </SelectItem>
-                        )
-                      )}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              {errors.recurrenceRule && (
-                <p className="text-destructive text-sm">
-                  {errors.recurrenceRule.message}
-                </p>
-              )}
-            </div>
+            <FormSelectField
+              control={control}
+              name="recurrenceRule"
+              label="دوره تکرار"
+              items={RecurrenceRuleLabel}
+              className="sm:col-span-2"
+            />
           )}
-          <div className="flex flex-col gap-2 sm:col-span-2">
-            <Label htmlFor="debt-notes">یادداشت</Label>
-            <Textarea id="debt-notes" {...register("notes")} />
-            {errors.notes && (
-              <p className="text-destructive text-sm">
-                {errors.notes.message}
-              </p>
-            )}
-          </div>
+          <FormTextareaField
+            control={control}
+            name="notes"
+            label="یادداشت"
+            className="sm:col-span-2"
+          />
           {errorMessage && (
             <p className="text-destructive text-sm sm:col-span-2">
               {errorMessage}

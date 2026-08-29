@@ -12,6 +12,7 @@ export function useLoginForm() {
   const { mutate, isPending, errorMessage } = useLogin();
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginRequestModel>({ resolver });
@@ -22,6 +23,7 @@ export function useLoginForm() {
 
   return {
     register,
+    control,
     errors,
     onSubmit,
     isPending,

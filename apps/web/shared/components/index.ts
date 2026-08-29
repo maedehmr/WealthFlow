@@ -20,4 +20,5 @@ export * from "./Logo";
 export * from "./Header";
 export * from "./AsideNav";
 export * from "./BottomNav";
+export * from "./form";
 
