@@ -25,7 +25,7 @@ export function LoginForm() {
       </CardHeader>
       <CardContent>
         <form className="grid gap-5" onSubmit={onSubmit} noValidate>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="email">ایمیل</Label>
             <div className="relative">
               <Mail className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -41,7 +41,7 @@ export function LoginForm() {
               <p className="text-sm text-destructive">{errors.email.message}</p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">رمز عبور</Label>
             </div>

@@ -95,14 +95,14 @@ export function AssetFormDialog() {
           onSubmit={onSubmit}
           noValidate
         >
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="asset-name">نام</Label>
             <Input id="asset-name" {...register("name")} />
             {errors.name && (
               <p className="text-destructive text-sm">{errors.name.message}</p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="asset-category">دسته‌بندی</Label>
             <Controller
               control={control}
@@ -139,7 +139,7 @@ export function AssetFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="asset-value">{valueLabel(category)}</Label>
             <Controller
               control={control}
@@ -160,7 +160,7 @@ export function AssetFormDialog() {
             )}
           </div>
           {showQuantity && (
-            <div className="grid gap-2">
+            <div className="flex flex-col gap-2">
               <Label htmlFor="asset-quantity">{quantityLabel(category)}</Label>
               <Controller
                 control={control}
@@ -183,7 +183,7 @@ export function AssetFormDialog() {
               )}
             </div>
           )}
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="asset-acquisition-date">تاریخ تملک</Label>
             <Controller
               control={control}
@@ -205,7 +205,7 @@ export function AssetFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2 sm:col-span-2">
+          <div className="flex flex-col gap-2 sm:col-span-2">
             <Label htmlFor="asset-location">محل نگهداری</Label>
             <Input id="asset-location" {...register("location")} />
             {errors.location && (
@@ -214,7 +214,7 @@ export function AssetFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2 sm:col-span-2">
+          <div className="flex flex-col gap-2 sm:col-span-2">
             <Label htmlFor="asset-notes">یادداشت</Label>
             <Textarea id="asset-notes" {...register("notes")} />
             {errors.notes && (

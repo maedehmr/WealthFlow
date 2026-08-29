@@ -83,14 +83,14 @@ export function ExpenseFormDialog() {
           onSubmit={onSubmit}
           noValidate
         >
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="expense-name">نام</Label>
             <Input id="expense-name" {...register("name")} />
             {errors.name && (
               <p className="text-destructive text-sm">{errors.name.message}</p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="expense-price">قیمت (تومان)</Label>
             <Controller
               control={control}
@@ -112,7 +112,7 @@ export function ExpenseFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="expense-category">دسته‌بندی</Label>
             <Controller
               control={control}
@@ -149,7 +149,7 @@ export function ExpenseFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="expense-date">تاریخ</Label>
             <Controller
               control={control}
@@ -169,7 +169,7 @@ export function ExpenseFormDialog() {
               <p className="text-destructive text-sm">{errors.date.message}</p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="expense-payment-method">روش پرداخت</Label>
             <Controller
               control={control}
@@ -230,7 +230,7 @@ export function ExpenseFormDialog() {
             )}
           </div>
           {isRecurring && (
-            <div className="grid gap-2 sm:col-span-2">
+            <div className="flex flex-col gap-2 sm:col-span-2">
               <Label htmlFor="expense-recurrence-rule">دوره تکرار</Label>
               <Controller
                 control={control}
@@ -268,7 +268,7 @@ export function ExpenseFormDialog() {
               )}
             </div>
           )}
-          <div className="grid gap-2 sm:col-span-2">
+          <div className="flex flex-col gap-2 sm:col-span-2">
             <Label htmlFor="expense-notes">یادداشت</Label>
             <Textarea id="expense-notes" {...register("notes")} />
             {errors.notes && (

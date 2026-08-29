@@ -103,14 +103,14 @@ export function InvestmentFormDialog() {
           onSubmit={onSubmit}
           noValidate
         >
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="investment-name">نام</Label>
             <Input id="investment-name" {...register("name")} />
             {errors.name && (
               <p className="text-destructive text-sm">{errors.name.message}</p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="investment-category">دسته‌بندی</Label>
             <Controller
               control={control}
@@ -147,7 +147,7 @@ export function InvestmentFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="investment-price">{priceLabel(category)}</Label>
             <Controller
               control={control}
@@ -169,7 +169,7 @@ export function InvestmentFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="investment-quantity">{quantityLabel(category)}</Label>
             <Controller
               control={control}
@@ -191,7 +191,7 @@ export function InvestmentFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="investment-purchase-date">تاریخ خرید</Label>
             <Controller
               control={control}
@@ -213,7 +213,7 @@ export function InvestmentFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="investment-broker">پلتفرم</Label>
             <Input id="investment-broker" {...register("broker")} />
             {errors.broker && (
@@ -248,7 +248,7 @@ export function InvestmentFormDialog() {
             )}
           </div>
           {isRecurring && (
-            <div className="grid gap-2 sm:col-span-2">
+            <div className="flex flex-col gap-2 sm:col-span-2">
               <Label htmlFor="investment-recurrence-rule">دوره تکرار</Label>
               <Controller
                 control={control}
@@ -286,7 +286,7 @@ export function InvestmentFormDialog() {
               )}
             </div>
           )}
-          <div className="grid gap-2 sm:col-span-2">
+          <div className="flex flex-col gap-2 sm:col-span-2">
             <Label htmlFor="investment-notes">یادداشت</Label>
             <Textarea id="investment-notes" {...register("notes")} />
             {errors.notes && (

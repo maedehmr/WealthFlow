@@ -82,14 +82,14 @@ export function IncomeFormDialog() {
           onSubmit={onSubmit}
           noValidate
         >
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="income-name">نام</Label>
             <Input id="income-name" {...register("name")} />
             {errors.name && (
               <p className="text-destructive text-sm">{errors.name.message}</p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="income-price">قیمت (تومان)</Label>
             <Controller
               control={control}
@@ -111,7 +111,7 @@ export function IncomeFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="income-source">منبع</Label>
             <Input id="income-source" {...register("source")} />
             {errors.source && (
@@ -120,7 +120,7 @@ export function IncomeFormDialog() {
               </p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="income-date">تاریخ</Label>
             <Controller
               control={control}
@@ -140,7 +140,7 @@ export function IncomeFormDialog() {
               <p className="text-destructive text-sm">{errors.date.message}</p>
             )}
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="income-category">دسته‌بندی</Label>
             <Controller
               control={control}
@@ -201,7 +201,7 @@ export function IncomeFormDialog() {
             )}
           </div>
           {isRecurring && (
-            <div className="grid gap-2 sm:col-span-2">
+            <div className="flex flex-col gap-2 sm:col-span-2">
               <Label htmlFor="income-recurrence-rule">دوره تکرار</Label>
               <Controller
                 control={control}
@@ -239,7 +239,7 @@ export function IncomeFormDialog() {
               )}
             </div>
           )}
-          <div className="grid gap-2 sm:col-span-2">
+          <div className="flex flex-col gap-2 sm:col-span-2">
             <Label htmlFor="income-notes">یادداشت</Label>
             <Textarea id="income-notes" {...register("notes")} />
             {errors.notes && (
